@@ -15,10 +15,10 @@
         app:title="Reader"
         app:titleTextColor="#ffffff"></android.support.v7.widget.Toolbar>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/book_viewer_recycler_view"
-        android:layout_below="@id/book_viewer_toolbar"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/book_viewer_view_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+        android:layout_height="match_parent"
+        android:layout_below="@id/book_viewer_toolbar"></android.support.v4.view.ViewPager>
 
 </RelativeLayout>

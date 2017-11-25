@@ -37,33 +37,10 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linear_layout_latest_book"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_below="@id/linear_layout_hot_book">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/sapling"
-            android:layout_marginLeft="-10dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="16dp"
-            android:text="最新书榜"
-            android:textSize="25dp"/>
-
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/linear_layout_all_book"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/linear_layout_latest_book"
+        android:layout_below="@id/linear_layout_hot_book"
         android:orientation="horizontal"
         android:paddingBottom="10dp"
         android:paddingTop="10dp">

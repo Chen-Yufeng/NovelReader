@@ -22,6 +22,8 @@
         </activity>
         <activity android:name=".bookviewer.BookViewerActivity">
         </activity>
+        <activity android:name=".AllClassActivity">
+        </activity>
     </application>
 
 </manifest>

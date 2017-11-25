@@ -17,8 +17,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/item_book_image_view"
+        android:maxLines="1"
         android:text="book name"
-        android:textSize="20dp"/>
+        android:textSize="18dp"/>
 
     <TextView
         android:id="@+id/item_book_book_author"
@@ -45,5 +46,11 @@
         android:layout_below="@id/item_book_book_short_intro"
         android:text="latelyFollower | retentionRatio"
         android:maxLines="1"/>
+
+    <View
+        android:background="@color/color_division_line"
+        android:layout_width="match_parent"
+        android:layout_below="@id/item_book_image_view"
+        android:layout_height="1dp"/>
 
 </RelativeLayout>

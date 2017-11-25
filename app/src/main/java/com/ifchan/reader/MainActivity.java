@@ -18,7 +18,6 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String INTENT_MODE = "INTENT_MODE";
     public static final int INTENT_MODE_HOT_BOOK = 1;
-    public static final int INTENT_MODE_LATEST_BOOK = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,13 +52,11 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        LinearLayout linearLayoutLatestBook = findViewById(R.id.linear_layout_latest_book);
+        LinearLayout linearLayoutLatestBook = findViewById(R.id.linear_layout_all_book);
         linearLayoutLatestBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Intent intent = new Intent(MainActivity.this, BookViewerActivity.class);
-                intent.putExtra(INTENT_MODE, INTENT_MODE_LATEST_BOOK);
+                Intent intent = new Intent(MainActivity.this, AllClassActivity.class);
                 startActivity(intent);
             }
         });
