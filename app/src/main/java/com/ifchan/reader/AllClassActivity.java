@@ -1,14 +1,18 @@
 package com.ifchan.reader;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ScrollView;
 
 import com.ifchan.reader.adapter.GridViewAdapter;
+import com.ifchan.reader.bookviewer.AllClassBookViewerActivity;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,6 +27,10 @@ import java.util.List;
 
 public class AllClassActivity extends AppCompatActivity {
     private static final int LOADED_JSON = 1;
+    public static final String ALL_CLASS_SEX = "ALL_CLASS_SEX";
+    public static final String IS_MALE = "male";
+    public static final String IS_FEMALE = "female";
+    public static final String CLASS = "CLASS";
     private ScrollView scrollView;
     private GridView gridViewMale;
     private GridView gridViewFemale;
@@ -116,5 +124,23 @@ public class AllClassActivity extends AppCompatActivity {
                 mBookCountFemale);
         gridViewMale.setAdapter(gridViewAdapterMale);
         gridViewFemale.setAdapter(gridViewAdapterFemale);
+        gridViewMale.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(AllClassActivity.this, AllClassBookViewerActivity.class);
+                intent.putExtra(ALL_CLASS_SEX,IS_MALE);
+                intent.putExtra(CLASS, mClassNameMale.get(position));
+                startActivity(intent);
+            }
+        });
+        gridViewFemale.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(AllClassActivity.this, AllClassBookViewerActivity.class);
+                intent.putExtra(ALL_CLASS_SEX,IS_FEMALE);
+                intent.putExtra(CLASS, mClassNameFemale.get(position));
+                startActivity(intent);
+            }
+        });
     }
 }
