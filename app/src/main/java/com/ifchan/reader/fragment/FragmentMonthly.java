@@ -37,7 +37,7 @@ import java.util.List;
 
 // TODO: 11/29/17 Download Covers
 
-public class FragmentNew extends MyBasicFragment {
+public class FragmentMonthly extends MyBasicFragment {
 
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -64,7 +64,7 @@ public class FragmentNew extends MyBasicFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle
             savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_new, container, false);
+        mView = inflater.inflate(R.layout.fragment_monthly, container, false);
         initRecyclerView();
         return mView;
     }
@@ -95,11 +95,9 @@ public class FragmentNew extends MyBasicFragment {
                 try {
                     url = new URL("http://api.zhuishushenqi" +
                             ".com/book/by-categories?gender=" + URLEncoder.encode
-                            (mOnAttachedListener
-                            .getSex(), "UTF-8")
-                            + "&type=new&major=" + URLEncoder.encode(mOnAttachedListener.getType
-                            (), "UTF-8") +
-                            "&minor=&start=0&limit=20");
+                            (mOnAttachedListener.getSex(), "UTF-8")
+                            + "&type=monthly&major=" + URLEncoder.encode(mOnAttachedListener.getType()
+                            , "UTF-8") + "&minor=&start=0&limit=20");
                     inputStream = url.openStream();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
                     StringBuilder builder = new StringBuilder();
@@ -219,7 +217,7 @@ public class FragmentNew extends MyBasicFragment {
     }
 
     private void initRecyclerView() {
-        RecyclerView recyclerView = mView.findViewById(R.id.fragment_new_recycler_view);
+        RecyclerView recyclerView = mView.findViewById(R.id.fragment_monthly_recycler_view);
         mBookRecyclerViewAdapter = new BookRecyclerViewAdapter(mBookList,
                 getActivity());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());

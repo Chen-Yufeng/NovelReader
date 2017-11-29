@@ -12,7 +12,7 @@ import com.ifchan.reader.fragment.FragmentHot;
 import com.ifchan.reader.fragment.FragmentNew;
 import com.ifchan.reader.fragment.FragmentOver;
 import com.ifchan.reader.fragment.FragmentReputation;
-import com.ifchan.reader.fragment.Fragmentmonthly;
+import com.ifchan.reader.fragment.FragmentMonthly;
 
 /**
  * Created by Carson_Ho on 16/7/22.
@@ -34,7 +34,7 @@ public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
         }else if (position==3){
             return new FragmentOver();
         } else if (position == 4) {
-            return new Fragmentmonthly();
+            return new FragmentMonthly();
         }
         return new FragmentHot();
     }

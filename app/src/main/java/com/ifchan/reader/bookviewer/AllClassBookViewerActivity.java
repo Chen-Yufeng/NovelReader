@@ -10,8 +10,11 @@ import android.os.Bundle;
 import com.ifchan.reader.AllClassActivity;
 import com.ifchan.reader.R;
 import com.ifchan.reader.adapter.MyFragmentPagerAdapter;
+import com.ifchan.reader.fragment.FragmentHot;
+import com.ifchan.reader.fragment.MyBasicFragment;
 
-public class AllClassBookViewerActivity extends AppCompatActivity {
+public class AllClassBookViewerActivity extends AppCompatActivity implements MyBasicFragment
+        .OnAttachedListener {
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
     private MyFragmentPagerAdapter myFragmentPagerAdapter;
@@ -24,6 +27,7 @@ public class AllClassBookViewerActivity extends AppCompatActivity {
 
     private String sex;
     private String type;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +44,7 @@ public class AllClassBookViewerActivity extends AppCompatActivity {
     }
 
     private void init() {
-        mViewPager= findViewById(R.id.all_class_view_pager);
+        mViewPager = findViewById(R.id.all_class_view_pager);
         myFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(myFragmentPagerAdapter);
 
@@ -62,5 +66,15 @@ public class AllClassBookViewerActivity extends AppCompatActivity {
         four.setIcon(R.mipmap.ic_launcher);
         five.setIcon(R.mipmap.ic_launcher);
 
+    }
+
+    @Override
+    public String getSex() {
+        return sex;
+    }
+
+    @Override
+    public String getType() {
+        return type;
     }
 }

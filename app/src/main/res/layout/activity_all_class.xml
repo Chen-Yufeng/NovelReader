@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:background="@color/colorToolbar"
         app:title="所有分类"
-        app:titleTextColor="#ffffff"></android.support.v7.widget.Toolbar>
+        app:titleTextColor="#ffffff"/>
 
     <ScrollView
         android:id="@+id/all_class_scroll_view"
@@ -24,7 +24,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
 
@@ -36,15 +36,15 @@
                 android:text="男生"
                 android:textSize="20dp"/>
 
-            <GridView
+            <com.ifchan.reader.view.NonScrollGridView
                 android:id="@+id/all_class_male_grid_view"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:horizontalSpacing="10dp"
                 android:numColumns="auto_fit"
                 android:stretchMode="columnWidth"
-                android:verticalSpacing="10dp"></GridView>
+                android:verticalSpacing="10dp"/>
 
             <TextView
                 android:id="@+id/all_class_female"
@@ -54,7 +54,7 @@
                 android:text="女生"
                 android:textSize="20dp"/>
 
-            <GridView
+            <com.ifchan.reader.view.NonScrollGridView
                 android:id="@+id/all_class_female_grid_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -62,7 +62,9 @@
                 android:horizontalSpacing="10dp"
                 android:numColumns="auto_fit"
                 android:stretchMode="columnWidth"
-                android:verticalSpacing="10dp"></GridView>
+                android:verticalSpacing="10dp"/>
+
+
         </LinearLayout>
 
     </ScrollView>

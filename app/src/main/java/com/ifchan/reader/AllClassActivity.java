@@ -13,6 +13,7 @@ import android.widget.ScrollView;
 
 import com.ifchan.reader.adapter.GridViewAdapter;
 import com.ifchan.reader.bookviewer.AllClassBookViewerActivity;
+import com.ifchan.reader.view.NonScrollGridView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,8 +33,8 @@ public class AllClassActivity extends AppCompatActivity {
     public static final String IS_FEMALE = "female";
     public static final String CLASS = "CLASS";
     private ScrollView scrollView;
-    private GridView gridViewMale;
-    private GridView gridViewFemale;
+    private NonScrollGridView gridViewMale;
+    private NonScrollGridView gridViewFemale;
     private GridViewAdapter gridViewAdapterMale;
     private GridViewAdapter gridViewAdapterFemale;
     private List<String> mClassNameMale = new ArrayList<>();
