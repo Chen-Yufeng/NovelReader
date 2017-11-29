@@ -22,6 +22,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -39,13 +40,18 @@ import java.util.List;
 
 public class FragmentReputation extends MyBasicFragment {
 
+    private static final int IMAGE_LOADED = 1;
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 0:
                     refreshRecyclerView();
+                    getBookImage(mBookList);
 //                    initRecyclerView();
+                    break;
+                case IMAGE_LOADED:
+                    mBookRecyclerViewAdapter.notifyItemChanged(msg.arg1);
                     break;
             }
         }
@@ -120,6 +126,7 @@ public class FragmentReputation extends MyBasicFragment {
                         String shortIntro = jsonObjectBook.getString("shortIntro");
                         String cover = jsonObjectBook.getString("cover");
                         cover = URLDecoder.decode(cover);
+                        cover = cover.substring(cover.indexOf('h'),cover.lastIndexOf('/'));
                         String coverPath = imageTemp.getPath() + "/" +
                                 id + ".jpg";
                         String site = jsonObjectBook.getString("site");
@@ -214,6 +221,48 @@ public class FragmentReputation extends MyBasicFragment {
 //                    return null;
 //                }
 //            }.execute();
+    }
+
+    private void getBookImage(final List<Book> books) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                InputStream imageInputStream = null;
+                FileOutputStream fileOutputStream = null;
+                int count = 0;
+                for (Book book : books) {
+                    URL imageUrl;
+                    try {
+                        imageUrl = new URL(book.getCover());
+                        imageInputStream = imageUrl.openStream();
+                        fileOutputStream = new FileOutputStream(book.getCoverPath());
+                        byte[] bytes = new byte[512];
+                        int read;
+                        while ((read = imageInputStream.read(bytes)) != -1) {
+                            fileOutputStream.write(bytes, 0, read);
+                        }
+                        Message message = new Message();
+                        message.what = IMAGE_LOADED;
+                        message.arg1 = count;
+                        count++;
+                        mHandler.sendMessage(message);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        try {
+                            if (imageInputStream != null) {
+                                imageInputStream.close();
+                            }
+                            if (fileOutputStream != null) {
+                                fileOutputStream.close();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }).start();
     }
 
     private void initRecyclerView() {

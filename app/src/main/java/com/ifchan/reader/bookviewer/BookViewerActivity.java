@@ -307,8 +307,12 @@ public class BookViewerActivity extends AppCompatActivity {
                         e.printStackTrace();
                     } finally {
                         try {
-                            imageInputStream.close();
-                            fileOutputStream.close();
+                            if (imageInputStream != null) {
+                                imageInputStream.close();
+                            }
+                            if (fileOutputStream != null) {
+                                fileOutputStream.close();
+                            }
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
