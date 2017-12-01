@@ -30,6 +30,8 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -46,6 +48,7 @@ public class FragmentNew extends MyBasicFragment {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 0:
+                    sortBook(mBookList);
                     refreshRecyclerView();
                     getBookImage(mBookList);
 //                    initRecyclerView();
@@ -102,7 +105,7 @@ public class FragmentNew extends MyBasicFragment {
                     url = new URL("http://api.zhuishushenqi" +
                             ".com/book/by-categories?gender=" + URLEncoder.encode
                             (mOnAttachedListener
-                            .getSex(), "UTF-8")
+                                    .getSex(), "UTF-8")
                             + "&type=new&major=" + URLEncoder.encode(mOnAttachedListener.getType
                             (), "UTF-8") +
                             "&minor=&start=0&limit=20");
@@ -128,7 +131,7 @@ public class FragmentNew extends MyBasicFragment {
                         String shortIntro = jsonObjectBook.getString("shortIntro");
                         String cover = jsonObjectBook.getString("cover");
                         cover = URLDecoder.decode(cover);
-                        cover = cover.substring(cover.indexOf('h'),cover.lastIndexOf('/'));
+                        cover = cover.substring(cover.indexOf('h'), cover.lastIndexOf('/'));
                         String coverPath = imageTemp.getPath() + "/" +
                                 id + ".jpg";
                         String site = jsonObjectBook.getString("site");
@@ -210,4 +213,5 @@ public class FragmentNew extends MyBasicFragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(mBookRecyclerViewAdapter);
     }
+
 }

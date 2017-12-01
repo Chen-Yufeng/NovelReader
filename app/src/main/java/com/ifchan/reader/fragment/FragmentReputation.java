@@ -46,6 +46,7 @@ public class FragmentReputation extends MyBasicFragment {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 0:
+                    sortBook(mBookList);
                     refreshRecyclerView();
                     getBookImage(mBookList);
 //                    initRecyclerView();

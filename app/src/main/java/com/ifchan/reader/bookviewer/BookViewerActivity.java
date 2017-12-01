@@ -11,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +39,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class BookViewerActivity extends AppCompatActivity {
+    private final String TAG = "@vir BookViewerActivity";
     private static final int IMAGE_LOADED = 2;
     private static final int INTENT_MODE_READER_LEFT = 3;
     private List<Book> mBookListHotBook = new ArrayList<>();
@@ -78,8 +81,23 @@ public class BookViewerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_viewer);
 
+        initToolbar();
         initViewPager();
         receiveIntent();
+    }
+
+    private void initToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.book_viewer_toolbar);
+        toolbar.setNavigationIcon(R.drawable.back);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     private void sortBook(List<Book> books) {
@@ -199,6 +217,9 @@ public class BookViewerActivity extends AppCompatActivity {
                                 ("latelyFollower"), j.getString("retentionRatio"));
                         String codedPath = book.getCover();
                         String decode = URLDecoder.decode(codedPath); //change afterwards
+                        if (!decode.contains("http")) {
+                            continue;
+                        }
                         String http = decode.substring(decode.indexOf('h'), decode.lastIndexOf
                                 ('/'));
                         book.setCover(http);
@@ -255,6 +276,9 @@ public class BookViewerActivity extends AppCompatActivity {
                                 ("latelyFollower"), j.getString("retentionRatio"));
                         String codedPath = book.getCover();
                         String decode = URLDecoder.decode(codedPath); //change afterwards
+                        if (!decode.contains("http")) {
+                            continue;
+                        }
                         String http = decode.substring(decode.indexOf('h'), decode.lastIndexOf
                                 ('/'));
                         book.setCover(http);

@@ -1,16 +1,15 @@
 package com.ifchan.reader.bookviewer;
 
-import android.app.AliasActivity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 
 import com.ifchan.reader.AllClassActivity;
 import com.ifchan.reader.R;
 import com.ifchan.reader.adapter.MyFragmentPagerAdapter;
-import com.ifchan.reader.fragment.FragmentHot;
 import com.ifchan.reader.fragment.MyBasicFragment;
 
 public class AllClassBookViewerActivity extends AppCompatActivity implements MyBasicFragment
@@ -44,6 +43,11 @@ public class AllClassBookViewerActivity extends AppCompatActivity implements MyB
     }
 
     private void init() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.all_class_book_viewer_toolbar);
+        toolbar.setNavigationIcon(R.drawable.back);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         mViewPager = findViewById(R.id.all_class_view_pager);
         myFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(myFragmentPagerAdapter);
@@ -66,6 +70,12 @@ public class AllClassBookViewerActivity extends AppCompatActivity implements MyB
         four.setIcon(R.mipmap.ic_launcher);
         five.setIcon(R.mipmap.ic_launcher);
 
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     @Override

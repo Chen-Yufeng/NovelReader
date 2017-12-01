@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ScrollView;
+import android.support.v7.widget.Toolbar;
 
 import com.ifchan.reader.adapter.GridViewAdapter;
 import com.ifchan.reader.bookviewer.AllClassBookViewerActivity;
@@ -110,6 +111,11 @@ public class AllClassActivity extends AppCompatActivity {
     }
 
     private void init() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.all_class_tool_bar);
+        toolbar.setNavigationIcon(R.drawable.back);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 //        scrollView = findViewById(R.id.all_class_scroll_view);
 //        scrollView.post(new Runnable() {
 //            @Override
@@ -143,5 +149,11 @@ public class AllClassActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }
