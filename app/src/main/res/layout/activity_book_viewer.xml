@@ -11,7 +11,7 @@
         android:id="@+id/book_viewer_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorToolbar"
+        android:background="@color/colorMyTheme"
         app:title="Reader"
         app:titleTextColor="#ffffff"></android.support.v7.widget.Toolbar>
 

@@ -11,7 +11,7 @@
         android:id="@+id/all_class_book_viewer_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorToolbar"
+        android:background="@color/colorMyTheme"
         app:title="Reader"
         app:titleTextColor="#ffffff"></android.support.v7.widget.Toolbar>
 
@@ -19,7 +19,7 @@
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:background="@color/colorToolbar"
+        android:background="@color/colorMyTheme"
         app:tabIndicatorColor="@color/colorIndicator"
         app:tabIndicatorHeight="5dp"
         app:tabMode="fixed"

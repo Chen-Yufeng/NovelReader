@@ -3,7 +3,10 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="colorToolbar">#4876FF</color>
+    <color name="colorMyTheme">#4876FF</color>
+    <color name="colorMyThemeText">#FFFFFF</color>
     <color name="color_division_line">#4876FF</color>
     <color name="colorIndicator">#FFFFFF</color>
+    <color name="cut_off_line">#CFCFCF</color>
+    <color name="colorHintText">#838B8B</color>
 </resources>

@@ -1,6 +1,7 @@
 package com.ifchan.reader.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ifchan.reader.BookDetailsActivity;
 import com.ifchan.reader.R;
 import com.ifchan.reader.entity.Book;
 
@@ -26,6 +28,7 @@ import java.util.List;
 
 public class BookRecyclerViewAdapter extends RecyclerView.Adapter<BookRecyclerViewAdapter
         .ViewHolder> {
+    public static final String INTENT_BOOK_FOR_DETAILS = "INTENT_BOOK_FOR_DETAILS";
     private final String TAG = "@vir BRVAdapter";
     private List<Book> mBookList;
     private Context mContext;
@@ -43,7 +46,10 @@ public class BookRecyclerViewAdapter extends RecyclerView.Adapter<BookRecyclerVi
         holder.bookView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(mContext, BookDetailsActivity.class);
+                intent.putExtra(INTENT_BOOK_FOR_DETAILS, mBookList.get(holder.getAdapterPosition
+                        ()));
+                mContext.startActivity(intent);
             }
         });
 
