@@ -1,18 +1,16 @@
 package com.ifchan.reader;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.ScrollView;
-import android.support.v7.widget.Toolbar;
 
-import com.ifchan.reader.adapter.GridViewAdapter;
+import com.ifchan.reader.adapter.AllClassGridViewAdapter;
 import com.ifchan.reader.bookviewer.AllClassBookViewerActivity;
 import com.ifchan.reader.view.NonScrollGridView;
 
@@ -33,11 +31,10 @@ public class AllClassActivity extends AppCompatActivity {
     public static final String IS_MALE = "male";
     public static final String IS_FEMALE = "female";
     public static final String CLASS = "CLASS";
-    private ScrollView scrollView;
     private NonScrollGridView gridViewMale;
     private NonScrollGridView gridViewFemale;
-    private GridViewAdapter gridViewAdapterMale;
-    private GridViewAdapter gridViewAdapterFemale;
+    private AllClassGridViewAdapter mAllClassGridViewAdapterMale;
+    private AllClassGridViewAdapter mAllClassGridViewAdapterFemale;
     private List<String> mClassNameMale = new ArrayList<>();
     private List<String> mBookCountMale = new ArrayList<>();
     private List<String> mClassNameFemale = new ArrayList<>();
@@ -47,9 +44,9 @@ public class AllClassActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case LOADED_JSON:
-//                    gridViewAdapterMale.notifyDataSetChanged();
+//                    mAllClassGridViewAdapterMale.notifyDataSetChanged();
 //                    gridViewMale.invalidateViews();
-//                    gridViewAdapterFemale.notifyDataSetChanged();
+//                    mAllClassGridViewAdapterFemale.notifyDataSetChanged();
 //                    gridViewFemale.invalidateViews();
                     init();
                     break;
@@ -125,17 +122,17 @@ public class AllClassActivity extends AppCompatActivity {
 //        });
         gridViewMale = findViewById(R.id.all_class_male_grid_view);
         gridViewFemale = findViewById(R.id.all_class_female_grid_view);
-        gridViewAdapterMale = new GridViewAdapter(AllClassActivity.this, mClassNameMale,
+        mAllClassGridViewAdapterMale = new AllClassGridViewAdapter(AllClassActivity.this, mClassNameMale,
                 mBookCountMale);
-        gridViewAdapterFemale = new GridViewAdapter(AllClassActivity.this, mClassNameFemale,
+        mAllClassGridViewAdapterFemale = new AllClassGridViewAdapter(AllClassActivity.this, mClassNameFemale,
                 mBookCountFemale);
-        gridViewMale.setAdapter(gridViewAdapterMale);
-        gridViewFemale.setAdapter(gridViewAdapterFemale);
+        gridViewMale.setAdapter(mAllClassGridViewAdapterMale);
+        gridViewFemale.setAdapter(mAllClassGridViewAdapterFemale);
         gridViewMale.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(AllClassActivity.this, AllClassBookViewerActivity.class);
-                intent.putExtra(ALL_CLASS_SEX,IS_MALE);
+                intent.putExtra(ALL_CLASS_SEX, IS_MALE);
                 intent.putExtra(CLASS, mClassNameMale.get(position));
                 startActivity(intent);
             }
@@ -144,7 +141,7 @@ public class AllClassActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(AllClassActivity.this, AllClassBookViewerActivity.class);
-                intent.putExtra(ALL_CLASS_SEX,IS_FEMALE);
+                intent.putExtra(ALL_CLASS_SEX, IS_FEMALE);
                 intent.putExtra(CLASS, mClassNameFemale.get(position));
                 startActivity(intent);
             }

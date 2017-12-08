@@ -17,8 +17,10 @@ public class Book implements Serializable {
     private int banned;
     private int latelyFollower;
     private String retentionRatio;
+    private String majorCate;
 
-    public Book(String id, String title, String author, String shortIntro, String cover, String site, int banned, int latelyFollower, String retentionRatio) {
+    public Book(String id, String title, String author, String shortIntro, String cover, String
+            site, int banned, int latelyFollower, String retentionRatio, String majorCate) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -28,9 +30,18 @@ public class Book implements Serializable {
         this.banned = banned;
         this.latelyFollower = latelyFollower;
         this.retentionRatio = retentionRatio;
+        this.majorCate = majorCate;
     }
 
     public Book() {
+    }
+
+    public String getMajorCate() {
+        return majorCate;
+    }
+
+    public void setMajorCate(String majorCate) {
+        this.majorCate = majorCate;
     }
 
     public String getCoverPath() {

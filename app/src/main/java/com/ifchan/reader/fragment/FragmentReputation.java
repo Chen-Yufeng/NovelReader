@@ -136,7 +136,7 @@ public class FragmentReputation extends MyBasicFragment {
                         String retentionRatio = Integer.toString(jsonObjectBook.getInt
                                 ("retentionRatio"));
                         Book book = new Book(id, title, author, shortIntro, cover, site, banned,
-                                latelyFollower, retentionRatio);
+                                latelyFollower, retentionRatio,jsonObjectBook.getString("majorCate"));
                         book.setCoverPath(coverPath);
                         mBookList.add(book);
                     }

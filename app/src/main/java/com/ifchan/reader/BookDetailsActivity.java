@@ -44,6 +44,7 @@ public class BookDetailsActivity extends AppCompatActivity {
             }
         }
     };
+    private final String TAG = "@vir BookDetailsActivity";
     private static final int INDEX_LOADED = 0;
     private Book mBook;
     private List<Index> mIndexList;
@@ -64,6 +65,10 @@ public class BookDetailsActivity extends AppCompatActivity {
     }
 
     private void initBasicBookInfo() {
+        TextView author = findViewById(R.id.book_details_author);
+        TextView tvClass =findViewById(R.id.book_details_class);
+        author.setText(mBook.getAuthor()+" | ");
+        tvClass.setText(mBook.getMajorCate());
         ImageView imageView = findViewById(R.id.book_details_image_view);
         File file = new File(mBook.getCoverPath());
         if (file.exists()) {
@@ -111,32 +116,36 @@ public class BookDetailsActivity extends AppCompatActivity {
                 URL url;
                 InputStream inputStream = null;
                 try {
-//                    url = new URL("http://api.zhuishushenqi.com/toc/"+mBook.getId()
-//                            +"?view=chapters");
-                    url = new URL("http://novel.juhe.im/book-chapters/"+mBook.getId());
-//                    inputStream = url.openStream();
+                    url = new URL("http://api.zhuishushenqi.com/mix-atoc/" + mBook.getId()
+                            + "?view=chapters");
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setConnectTimeout(5000);
                     connection.setRequestMethod("GET");
-                    inputStream = connection.getInputStream();
+                    connection.setDoOutput(true);
+                    int responseCode = connection.getResponseCode();
+                    if (responseCode == 200) {
+                        inputStream = connection.getInputStream();
 
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                    StringBuilder builder = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        builder.append(line);
+                        BufferedReader reader = new BufferedReader(new InputStreamReader
+                                (inputStream));
+                        StringBuilder builder = new StringBuilder();
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            builder.append(line);
+                        }
+                        JSONObject jsonObject = new JSONObject(builder.toString());
+                        JSONObject data = jsonObject.getJSONObject("mixToc");
+                        JSONArray jsonArray = data.getJSONArray("chapters");
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject indexJsonObject = jsonArray.getJSONObject(i);
+                            Index index = new Index(indexJsonObject.getString("title"),
+                                    indexJsonObject.getString("link"));
+                            mIndexList.add(index);
+                        }
+                        Message message = new Message();
+                        message.what = INDEX_LOADED;
+                        mHandler.sendMessage(message);
                     }
-                    JSONObject jsonObject = new JSONObject(builder.toString());
-                    JSONObject data = jsonObject.getJSONObject("data");
-                    JSONArray jsonArray = data.getJSONArray("chapters");
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject indexJsonObject = jsonArray.getJSONObject(i);
-                        Index index = new Index(indexJsonObject.getString("title"),
-                                indexJsonObject.getString("link"));
-                        mIndexList.add(index);
-                    }
-                    Message message = new Message();
-                    message.what = INDEX_LOADED;
-                    mHandler.sendMessage(message);
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {

@@ -214,7 +214,7 @@ public class BookViewerActivity extends AppCompatActivity {
                         Book book = new Book(j.getString("_id"), j.getString("title"),
                                 j.getString("author"), j.getString("shortIntro"), j.getString
                                 ("cover"), j.getString("site"), j.getInt("banned"), j.getInt
-                                ("latelyFollower"), j.getString("retentionRatio"));
+                                ("latelyFollower"), j.getString("retentionRatio"), j.getString("majorCate"));
                         String codedPath = book.getCover();
                         String decode = URLDecoder.decode(codedPath); //change afterwards
                         if (!decode.contains("http")) {
@@ -273,7 +273,7 @@ public class BookViewerActivity extends AppCompatActivity {
                         Book book = new Book(j.getString("_id"), j.getString("title"),
                                 j.getString("author"), j.getString("shortIntro"), j.getString
                                 ("cover"), j.getString("site"), j.getInt("banned"), j.getInt
-                                ("latelyFollower"), j.getString("retentionRatio"));
+                                ("latelyFollower"), j.getString("retentionRatio"),j.getString("majorCate"));
                         String codedPath = book.getCover();
                         String decode = URLDecoder.decode(codedPath); //change afterwards
                         if (!decode.contains("http")) {

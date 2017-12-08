@@ -17,12 +17,12 @@ import java.util.List;
  * Created by daily on 11/23/17.
  */
 
-public class GridViewAdapter extends BaseAdapter {
+public class AllClassGridViewAdapter extends BaseAdapter {
     private Context mContext;
     private List<String> mClassName;
     private List<String> mBookCount;
 
-    public GridViewAdapter(Context context, List<String> className, List<String> bookCount) {
+    public AllClassGridViewAdapter(Context context, List<String> className, List<String> bookCount) {
         mContext = context;
         mClassName = className;
         mBookCount = bookCount;

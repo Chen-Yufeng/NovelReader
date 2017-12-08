@@ -9,4 +9,6 @@
     <color name="colorIndicator">#FFFFFF</color>
     <color name="cut_off_line">#CFCFCF</color>
     <color name="colorHintText">#838B8B</color>
+    <color name="common_h1">#000000</color>
+    <color name="orange">#DE6014</color>
 </resources>
