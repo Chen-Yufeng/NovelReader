@@ -9,35 +9,30 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.ifchan.reader.R;
-import com.ifchan.reader.SearchActivity;
 import com.ifchan.reader.adapter.BookRecyclerViewAdapter;
 import com.ifchan.reader.entity.Book;
 import com.ifchan.reader.helper.BookshelfDataBaseHelper;
-import com.ifchan.reader.helper.DataBaseHelper;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by daily on 11/25/17.
  */
 
-// TODO: 11/29/17 Download Covers
+// TODO: 重复加载!
 
 public class FragmentBookshelf extends MyBasicFragment {
 
