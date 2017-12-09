@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,19 +20,23 @@ import android.widget.ImageButton;
 
 import com.ifchan.reader.adapter.HistoryGridViewAdapter;
 import com.ifchan.reader.adapter.SearchSuggestionAdapter;
+import com.ifchan.reader.entity.Book;
 import com.ifchan.reader.helper.DataBaseHelper;
+import com.ifchan.reader.utils.RecyclerView.SimpleDividerItemDecoration;
 import com.ifchan.reader.view.NonScrollGridView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +45,7 @@ public class SearchActivity extends AppCompatActivity {
     private static final String API_HOTWORDS = "http://api.zhuishushenqi.com/book/search-hotword";
     private final String TAG = "@vir SearchActivity";
     private SearchView mSearchView;
-    private List<String> results = new ArrayList<>();
+    private List<Book> results = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private SearchSuggestionAdapter mAdapter;
     private DataBaseHelper mDataBaseHelper;
@@ -139,6 +144,7 @@ public class SearchActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(SearchActivity.this);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(SearchActivity.this));
     }
 
     private void initToolBar() {
@@ -200,7 +206,7 @@ public class SearchActivity extends AppCompatActivity {
 
     private void getSuggestion(String input) {
         try {
-            final String api = "http://api.zhuishushenqi.com/book/auto-complete?query=" + URLEncoder
+            final String api = "http://api.zhuishushenqi.com/book/fuzzy-search?query=" + URLEncoder
                     .encode(input, "UTF-8");
             new AsyncTask<Void, Void, Void>() {
                 int lastSize = 0;
@@ -234,14 +240,35 @@ public class SearchActivity extends AppCompatActivity {
                         }
                         bufferedReader.close();
                         JSONObject jsonObject = new JSONObject(stringBuilder.toString());
-                        JSONArray keyWordsJSONArray = jsonObject.getJSONArray("keywords");
+                        JSONArray keyWordsJSONArray = jsonObject.getJSONArray("books");
                         lastSize = results.size();
                         Log.d(TAG, "lastSize=" + lastSize);
                         results.clear();
-                        for (int index = 0; index < keyWordsJSONArray.length(); index++) {
-                            results.add(keyWordsJSONArray.getString(index));
+                        File externalFolder = Environment.getExternalStorageDirectory();
+                        File imageTemp = new File(externalFolder.getPath() + "/Reader/temp/cover");
+                        if (!imageTemp.exists()) {
+                            imageTemp.mkdirs();
                         }
-                        Log.d(TAG, "size=" + results.size());
+                        for (int index = 0; index < keyWordsJSONArray.length(); index++) {
+                            JSONObject aBook = keyWordsJSONArray.getJSONObject(index);
+                            String bookid = aBook.getString("_id");
+                            String title =  aBook.getString("title");
+                            String author =  aBook.getString("author");
+                            String shortIntro =  aBook.getString("shortIntro");
+                            String cover =  aBook.getString("cover");
+                            cover = URLDecoder.decode(cover,"UTF-8");
+                            cover = cover.substring(cover.indexOf('h'),cover.lastIndexOf('/'));
+                            String coverPath = imageTemp.getPath() + "/" +
+                                    bookid + ".jpg";
+                            // TODO: 12/9/17 cover ans coverPath needs format
+                            String site =  aBook.getString("site");
+                            String latelyFollower =  aBook.getString("latelyFollower");
+
+                            String retentionRatio =  aBook.getString("retentionRatio");
+                            String majorCate =  aBook.getString("cat");
+                            results.add(new Book(bookid, title, author, shortIntro, cover, coverPath,
+                                    site, Integer.parseInt(latelyFollower), retentionRatio, majorCate));
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     } finally {
@@ -270,9 +297,9 @@ public class SearchActivity extends AppCompatActivity {
         mRecyclerView.setVisibility(View.GONE);
     }
 
-    private void renewSuggestion(List<String> stringList) {
-        mAdapter.setStringList(stringList);
-        mAdapter.notifyItemRangeInserted(0, stringList.size() - 1);
+    private void renewSuggestion(List<Book> bookList) {
+        mAdapter.setBookList(bookList);
+        mAdapter.notifyItemRangeInserted(0, bookList.size() - 1);
     }
 
     private void clearRecyclerView(int size) {

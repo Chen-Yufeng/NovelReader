@@ -10,8 +10,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -22,11 +20,9 @@ import android.widget.Toast;
 
 import com.ifchan.reader.adapter.BookRecyclerViewAdapter;
 import com.ifchan.reader.adapter.IndexExpandableListViewAdapter;
-import com.ifchan.reader.adapter.IndexRecyclerViewAdapter;
 import com.ifchan.reader.entity.Book;
 import com.ifchan.reader.entity.Index;
 import com.ifchan.reader.helper.BookshelfDataBaseHelper;
-import com.ifchan.reader.utils.Util;
 import com.ifchan.reader.utils.Utility;
 
 import org.json.JSONArray;
@@ -34,6 +30,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -43,11 +40,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookDetailsActivity extends AppCompatActivity {
+    private static final int IMAGE_LOADED = 0;
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case INDEX_LOADED:
+                    renewBookImage();
                     break;
             }
         }
@@ -62,6 +61,8 @@ public class BookDetailsActivity extends AppCompatActivity {
     private int databaseSize = 0;
     private boolean haveBeenAdded = false;
     private Button buttonAdd, buttonReading;
+    private ImageView imageView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,15 +100,19 @@ public class BookDetailsActivity extends AppCompatActivity {
     }
 
     private void initBasicBookInfo() {
+        TextView name = findViewById(R.id.book_details_book_name);
         TextView author = findViewById(R.id.book_details_author);
         TextView tvClass = findViewById(R.id.book_details_class);
+        name.setText(mBook.getTitle());
         author.setText(mBook.getAuthor() + " | ");
         tvClass.setText(mBook.getMajorCate());
-        ImageView imageView = findViewById(R.id.book_details_image_view);
+        imageView = findViewById(R.id.book_details_image_view);
         File file = new File(mBook.getCoverPath());
         if (file.exists()) {
             Bitmap bitmap = BitmapFactory.decodeFile(mBook.getCoverPath());
             imageView.setImageBitmap(bitmap);
+        } else {
+            getBookImage(mBook);
         }
 
         buttonAdd = findViewById(R.id.book_details_add_to_follow_list);
@@ -135,15 +140,55 @@ public class BookDetailsActivity extends AppCompatActivity {
             }
         });
 
-        TextView textViewFollowers, textViewRetentionRatio, textViewDailyUpdate,
+        TextView textViewFollowers, textViewRetentionRatio, textViewWords,
                 textViewShortIntroduce;
         textViewFollowers = findViewById(R.id.book_details_rtv4);
         textViewRetentionRatio = findViewById(R.id.book_details_rtv5);
-        textViewDailyUpdate = findViewById(R.id.book_details_rtv6);
+        textViewWords = findViewById(R.id.book_details_rtv6);
         textViewShortIntroduce = findViewById(R.id.book_details_short_introduce);
         textViewFollowers.setText(Integer.toString(mBook.getLatelyFollower()));
         textViewRetentionRatio.setText(mBook.getRetentionRatio());
         textViewShortIntroduce.setText(mBook.getShortIntro());
+    }
+
+    private void getBookImage(final Book book) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                InputStream imageInputStream = null;
+                FileOutputStream fileOutputStream = null;
+                int count = 0;
+                URL imageUrl;
+                try {
+                    imageUrl = new URL(book.getCover());
+                    imageInputStream = imageUrl.openStream();
+                    fileOutputStream = new FileOutputStream(book.getCoverPath());
+                    byte[] bytes = new byte[512];
+                    int read;
+                    while ((read = imageInputStream.read(bytes)) != -1) {
+                        fileOutputStream.write(bytes, 0, read);
+                    }
+                    Message message = new Message();
+                    message.what = IMAGE_LOADED;
+                    message.arg1 = count;
+                    count++;
+                    mHandler.sendMessage(message);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        if (imageInputStream != null) {
+                            imageInputStream.close();
+                        }
+                        if (fileOutputStream != null) {
+                            fileOutputStream.close();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
     }
 
     private void initIndex() {
@@ -209,7 +254,7 @@ public class BookDetailsActivity extends AppCompatActivity {
                 .book_details_expandable_list_view);
         final IndexExpandableListViewAdapter adapter = new IndexExpandableListViewAdapter
                 (BookDetailsActivity
-                .this, new String[][]{{"1", "2", "3", "1", "2", "3","1", "2", "3"}});
+                        .this, new String[][]{{"1", "2", "3", "1", "2", "3", "1", "2", "3"}});
         expandableListView.setAdapter(adapter);
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
@@ -237,5 +282,13 @@ public class BookDetailsActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    private void renewBookImage() {
+        File file = new File(mBook.getCoverPath());
+        if (file.exists()) {
+            Bitmap bitmap = BitmapFactory.decodeFile(mBook.getCoverPath());
+            imageView.setImageBitmap(bitmap);
+        }
     }
 }

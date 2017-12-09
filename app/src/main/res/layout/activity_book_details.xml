@@ -29,72 +29,72 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/book_details_image_view"
-                android:layout_width="55dp"
-                android:layout_height="75dp"
-                android:layout_alignParentLeft="true"
-                android:layout_marginRight="10dp"
-                android:scaleType="centerCrop"
-                />
+                <ImageView
+                    android:id="@+id/book_details_image_view"
+                    android:layout_width="55dp"
+                    android:layout_height="75dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginRight="10dp"
+                    android:scaleType="centerCrop"
+                    />
 
                 <TextView
                     android:id="@+id/book_details_book_name"
-                    android:text="TEST"
-                    android:textSize="20dp"
-                    android:textColor="@color/common_h1"
-                    android:layout_toRightOf="@id/book_details_image_view"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/book_details_image_view"
+                    android:text="TEST"
+                    android:textColor="@color/common_h1"
+                    android:textSize="20dp"/>
 
                 <TextView
                     android:id="@+id/book_details_author"
-                    android:text="author | "
-                    android:layout_toRightOf="@id/book_details_image_view"
-                    android:layout_below="@id/book_details_book_name"
-                    android:textColor="@color/orange"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/book_details_book_name"
+                    android:layout_toRightOf="@id/book_details_image_view"
+                    android:text="author | "
+                    android:textColor="@color/orange"/>
 
                 <TextView
                     android:id="@+id/book_details_class"
-                    android:text=" | class | "
-                    android:layout_toRightOf="@id/book_details_author"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_below="@id/book_details_book_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_toRightOf="@id/book_details_author"
+                    android:text=" | class | "/>
 
 
-            <LinearLayout
-                android:layout_below="@id/book_details_image_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-
-                <Button
-                    android:id="@+id/book_details_add_to_follow_list"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:background="@color/colorMyTheme"
-                    android:text="+追更新"
-                    android:textColor="@color/colorMyThemeText"
-                    android:textSize="20dp"/>
+                    android:layout_below="@id/book_details_image_view"
+                    android:orientation="horizontal"
+                    >
 
-                <Button
-                    android:id="@+id/book_details_start_reading_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:background="@color/colorMyTheme"
-                    android:text="开始阅读"
-                    android:textColor="@color/colorMyThemeText"
-                    android:textSize="20dp"/>
+                    <Button
+                        android:id="@+id/book_details_add_to_follow_list"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        android:background="@color/colorMyTheme"
+                        android:text="+追更新"
+                        android:textColor="@color/colorMyThemeText"
+                        android:textSize="20dp"/>
 
-            </LinearLayout>
+                    <Button
+                        android:id="@+id/book_details_start_reading_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        android:background="@color/colorMyTheme"
+                        android:text="开始阅读"
+                        android:textColor="@color/colorMyThemeText"
+                        android:textSize="20dp"/>
+
+                </LinearLayout>
 
             </RelativeLayout>
 
@@ -113,67 +113,71 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <RelativeLayout
+                    <LinearLayout
+                        android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <TextView
-                            android:id="@+id/book_details_rtv1"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:id="@+id/book_details_three_info"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginRight="20dp"
-                            android:layout_marginTop="20dp"
-                            android:layout_weight="1"
-                            android:text="追书人数"
-                            android:textColor="@color/colorHintText"
-                            android:textSize="16dp"/>
+                            android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/book_details_rtv2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginRight="20dp"
-                            android:layout_marginTop="20dp"
-                            android:layout_toRightOf="@id/book_details_rtv1"
-                            android:layout_weight="1"
-                            android:text="读者存留率"
-                            android:textColor="@color/colorHintText"
-                            android:textSize="16dp"/>
 
-                        <TextView
-                            android:id="@+id/book_details_rtv3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginRight="20dp"
-                            android:layout_marginTop="20dp"
-                            android:layout_toRightOf="@id/book_details_rtv2"
-                            android:layout_weight="1"
-                            android:text="日更新字数"
-                            android:textColor="@color/colorHintText"
-                            android:textSize="16dp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="20dp"
+                                android:layout_marginRight="20dp"
+                                android:layout_marginTop="20dp"
+                                android:layout_weight="1"
+                                android:text="追书人数"
+                                android:textColor="@color/colorHintText"
+                                android:textSize="16dp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="20dp"
+                                android:layout_marginRight="20dp"
+                                android:layout_marginTop="20dp"
+                                android:layout_weight="1"
+                                android:text="读者存留率"
+                                android:textColor="@color/colorHintText"
+                                android:textSize="16dp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="20dp"
+                                android:layout_marginRight="20dp"
+                                android:layout_marginTop="20dp"
+                                android:layout_weight="1"
+                                android:text="字数"
+                                android:textColor="@color/colorHintText"
+                                android:textSize="16dp"/>
+                        </LinearLayout>
+
 
                         <View
                             android:id="@+id/book_details_r_cut_off1"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
-                            android:layout_below="@id/book_details_rtv1"
+                            android:layout_below="@id/book_details_three_info"
                             android:background="@color/cut_off_line"/>
 
                         <LinearLayout
                             android:id="@+id/book_details_r_l"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/book_details_rtv1"
+                            android:layout_below="@id/book_details_three_info"
                             android:orientation="horizontal">
 
                             <TextView
                                 android:id="@+id/book_details_rtv4"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_below="@id/book_details_rtv1"
                                 android:layout_marginLeft="20dp"
                                 android:layout_marginRight="20dp"
                                 android:layout_marginTop="5dp"
@@ -187,11 +191,9 @@
                                 android:id="@+id/book_details_rtv5"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_below="@id/book_details_rtv2"
                                 android:layout_marginLeft="20dp"
                                 android:layout_marginRight="20dp"
                                 android:layout_marginTop="5dp"
-                                android:layout_toRightOf="@id/book_details_rtv1"
                                 android:layout_weight="1"
                                 android:gravity="center"
                                 android:text="5"
@@ -202,14 +204,11 @@
                                 android:id="@+id/book_details_rtv6"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_below="@id/book_details_rtv3"
                                 android:layout_marginLeft="20dp"
                                 android:layout_marginRight="20dp"
                                 android:layout_marginTop="5dp"
-                                android:layout_toRightOf="@id/book_details_rtv2"
                                 android:layout_weight="1"
                                 android:gravity="center"
-                                android:text="6"
                                 android:textColor="@color/colorHintText"
                                 android:textSize="18dp"/>
 
@@ -222,7 +221,7 @@
                             android:layout_below="@id/book_details_r_l"
                             android:background="@color/cut_off_line"/>
 
-                    </RelativeLayout>
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -259,9 +258,9 @@
                         android:textSize="16dp"/>
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
                         <ExpandableListView
                             android:id="@+id/book_details_expandable_list_view"
