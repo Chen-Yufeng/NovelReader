@@ -33,6 +33,20 @@ public class Book implements Serializable {
         this.majorCate = majorCate;
     }
 
+    public Book(String id, String title, String author, String shortIntro, String cover, String
+            coverPath, String site, int latelyFollower, String retentionRatio, String majorCate) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.shortIntro = shortIntro;
+        this.cover = cover;
+        this.coverPath = coverPath;
+        this.site = site;
+        this.latelyFollower = latelyFollower;
+        this.retentionRatio = retentionRatio;
+        this.majorCate = majorCate;
+    }
+
     public Book() {
     }
 

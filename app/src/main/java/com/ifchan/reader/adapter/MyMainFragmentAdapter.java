@@ -8,32 +8,31 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.ifchan.reader.fragment.FragmentBookshelf;
+import com.ifchan.reader.fragment.FragmentCommunity;
+import com.ifchan.reader.fragment.FragmentFindNew;
 import com.ifchan.reader.fragment.FragmentHot;
+import com.ifchan.reader.fragment.FragmentMonthly;
 import com.ifchan.reader.fragment.FragmentNew;
 import com.ifchan.reader.fragment.FragmentOver;
 import com.ifchan.reader.fragment.FragmentReputation;
-import com.ifchan.reader.fragment.FragmentMonthly;
 
-public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
+public class MyMainFragmentAdapter extends FragmentPagerAdapter {
 
-    private String[] mTitles = new String[]{"热门", "新书","好评","完结","包月"};
+    private String[] mTitles = new String[]{"书架", "社区","发现"};
 
-    public MyFragmentPagerAdapter(FragmentManager fm) {
+    public MyMainFragmentAdapter(FragmentManager fm) {
         super(fm);
     }
 
     @Override
     public Fragment getItem(int position) {
         if (position == 1) {
-            return new FragmentNew();
+            return new FragmentCommunity();
         } else if (position == 2) {
-            return new FragmentReputation();
-        }else if (position==3){
-            return new FragmentOver();
-        } else if (position == 4) {
-            return new FragmentMonthly();
+            return new FragmentFindNew();
         }
-        return new FragmentHot();
+        return new FragmentBookshelf();
     }
 
     @Override

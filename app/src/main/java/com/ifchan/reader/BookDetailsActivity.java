@@ -1,6 +1,8 @@
 package com.ifchan.reader;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -23,6 +25,7 @@ import com.ifchan.reader.adapter.IndexExpandableListViewAdapter;
 import com.ifchan.reader.adapter.IndexRecyclerViewAdapter;
 import com.ifchan.reader.entity.Book;
 import com.ifchan.reader.entity.Index;
+import com.ifchan.reader.helper.BookshelfDataBaseHelper;
 import com.ifchan.reader.utils.Util;
 import com.ifchan.reader.utils.Utility;
 
@@ -54,8 +57,11 @@ public class BookDetailsActivity extends AppCompatActivity {
     private Book mBook;
     private List<Index> mIndexList;
     private static boolean isFloded = true;
-    private int originalHeight;
-
+    private BookshelfDataBaseHelper mDataBaseHelper;
+    private SQLiteDatabase db;
+    private int databaseSize = 0;
+    private boolean haveBeenAdded = false;
+    private Button buttonAdd, buttonReading;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,8 +69,28 @@ public class BookDetailsActivity extends AppCompatActivity {
 
         receive();
         initBasicBookInfo();
+        initDataBase();
         initIndex();
         test();
+    }
+
+
+    private void initDataBase() {
+        mDataBaseHelper = BookshelfDataBaseHelper.getInstance(BookDetailsActivity.this);
+        db = mDataBaseHelper.getWritableDatabase();
+        Cursor cursor = db.query("Bookshelf", null, null, null, null, null, null);
+        if (cursor.moveToFirst()) {
+            do {
+                databaseSize++;
+                String bookid = cursor.getString(cursor.getColumnIndex("bookid"));
+                if (bookid.equals(mBook.getId())) {
+                    haveBeenAdded = true;
+                    buttonAdd.setEnabled(false);
+                    buttonAdd.setText("已添加");
+                }
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
     }
 
     private void receive() {
@@ -84,13 +110,22 @@ public class BookDetailsActivity extends AppCompatActivity {
             imageView.setImageBitmap(bitmap);
         }
 
-        Button buttonAdd, buttonReading;
         buttonAdd = findViewById(R.id.book_details_add_to_follow_list);
         buttonReading = findViewById(R.id.book_details_start_reading_button);
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!haveBeenAdded) {
+                    mDataBaseHelper.addToBookshelf(db, databaseSize + 1, mBook.getId(), mBook
+                                    .getTitle(), mBook.getAuthor(), mBook.getShortIntro(), mBook
+                                    .getCover(),
 
+                            mBook.getCoverPath(), mBook.getSite(), mBook.getLatelyFollower(), mBook
+                                    .getRetentionRatio(), mBook.getMajorCate());
+                    databaseSize++;
+                    buttonAdd.setText("已添加");
+                    buttonAdd.setEnabled(false);
+                }
             }
         });
         buttonReading.setOnClickListener(new View.OnClickListener() {
