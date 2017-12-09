@@ -10,12 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.LinearLayout;
 
-import com.ifchan.reader.adapter.MyFragmentPagerAdapter;
+import com.example.testscroll.TextReaderActivity;
 import com.ifchan.reader.adapter.MyMainFragmentAdapter;
-import com.ifchan.reader.bookviewer.BookViewerActivity;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -41,6 +38,12 @@ public class MainActivity extends AppCompatActivity {
         getPermission();
         init();
         initTab();
+        test();
+    }
+
+    private void test() {
+        Intent intent = new Intent(MainActivity.this, TextReaderActivity.class);
+        startActivity(intent);
     }
 
     private void initTab() {

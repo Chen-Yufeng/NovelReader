@@ -726,7 +726,7 @@ public final class R {
         public static int abc_search_dropdown_item_icons_2line = 0x7f0f0019;
         public static int abc_search_view = 0x7f0f001a;
         public static int abc_select_dialog_material = 0x7f0f001b;
-        public static int activity_main = 0x7f0f001c;
+        public static int activity_t_e_x_t = 0x7f0f001c;
         public static int notification_action = 0x7f0f001d;
         public static int notification_action_tombstone = 0x7f0f001e;
         public static int notification_media_action = 0x7f0f001f;
