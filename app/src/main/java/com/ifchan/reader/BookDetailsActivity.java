@@ -11,14 +11,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ifchan.reader.adapter.BookRecyclerViewAdapter;
+import com.ifchan.reader.adapter.IndexExpandableListViewAdapter;
 import com.ifchan.reader.adapter.IndexRecyclerViewAdapter;
 import com.ifchan.reader.entity.Book;
 import com.ifchan.reader.entity.Index;
+import com.ifchan.reader.utils.Util;
+import com.ifchan.reader.utils.Utility;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -39,7 +45,6 @@ public class BookDetailsActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case INDEX_LOADED:
-                    InitIndexRecyclerView();
                     break;
             }
         }
@@ -48,6 +53,8 @@ public class BookDetailsActivity extends AppCompatActivity {
     private static final int INDEX_LOADED = 0;
     private Book mBook;
     private List<Index> mIndexList;
+    private static boolean isFloded = true;
+    private int originalHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +64,7 @@ public class BookDetailsActivity extends AppCompatActivity {
         receive();
         initBasicBookInfo();
         initIndex();
+        test();
     }
 
     private void receive() {
@@ -66,8 +74,8 @@ public class BookDetailsActivity extends AppCompatActivity {
 
     private void initBasicBookInfo() {
         TextView author = findViewById(R.id.book_details_author);
-        TextView tvClass =findViewById(R.id.book_details_class);
-        author.setText(mBook.getAuthor()+" | ");
+        TextView tvClass = findViewById(R.id.book_details_class);
+        author.setText(mBook.getAuthor() + " | ");
         tvClass.setText(mBook.getMajorCate());
         ImageView imageView = findViewById(R.id.book_details_image_view);
         File file = new File(mBook.getCoverPath());
@@ -161,12 +169,38 @@ public class BookDetailsActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void InitIndexRecyclerView() {
-        RecyclerView indexRecyclerView = findViewById(R.id.book_details_index_recycler_view);
-        IndexRecyclerViewAdapter indexRecyclerViewAdapter = new IndexRecyclerViewAdapter
-                (BookDetailsActivity.this, mIndexList);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(BookDetailsActivity.this);
-        indexRecyclerView.setLayoutManager(linearLayoutManager);
-        indexRecyclerView.setAdapter(indexRecyclerViewAdapter);
+    private void test() {
+        final ExpandableListView expandableListView = findViewById(R.id
+                .book_details_expandable_list_view);
+        final IndexExpandableListViewAdapter adapter = new IndexExpandableListViewAdapter
+                (BookDetailsActivity
+                .this, new String[][]{{"1", "2", "3", "1", "2", "3","1", "2", "3"}});
+        expandableListView.setAdapter(adapter);
+        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition,
+                                        long id) {
+                if (isFloded) {
+                    Utility.setListViewHeightBasedOnChildren(expandableListView, adapter);
+//                    Util.setListViewHeightBasedOnChildren(expandableListView);
+                    isFloded = false;
+                } else {
+                    ViewGroup.LayoutParams params = expandableListView.getLayoutParams();
+                    params.height = 200;
+                    expandableListView.setLayoutParams(params);
+//                    Util.setListViewHeightBasedOnChildren(expandableListView);
+                    isFloded = true;
+                }
+                return false;
+            }
+        });
+        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int
+                    childPosition, long id) {
+                Toast.makeText(BookDetailsActivity.this, "Click", Toast.LENGTH_LONG);
+                return true;
+            }
+        });
     }
 }

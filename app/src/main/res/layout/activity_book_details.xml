@@ -258,10 +258,17 @@
                         android:text="目录"
                         android:textSize="16dp"/>
 
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/book_details_index_recycler_view"
+                    <LinearLayout
+                        android:orientation="vertical"
                         android:layout_width="match_parent"
-                        android:layout_height="200dp"></android.support.v7.widget.RecyclerView>
+                        android:layout_height="wrap_content">
+
+                        <ExpandableListView
+                            android:id="@+id/book_details_expandable_list_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"></ExpandableListView>
+
+                    </LinearLayout>
 
                 </LinearLayout>
 

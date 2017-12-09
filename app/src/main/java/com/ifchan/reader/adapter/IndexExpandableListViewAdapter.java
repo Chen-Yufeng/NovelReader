@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import com.ifchan.reader.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by daily on 12/8/17.
  */
