@@ -1,8 +1,8 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 26
-//    buildToolsVersion "26.0.2"
+//    buildToolsVersion "26.0.0"
 
 //    defaultConfig {
 //        applicationId "com.example.testscrollactivity"
@@ -15,7 +15,6 @@ android {
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 //    buildTypes {
 //        release {
