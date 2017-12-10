@@ -22,7 +22,7 @@ import com.ifchan.reader.adapter.HistoryGridViewAdapter;
 import com.ifchan.reader.adapter.SearchSuggestionAdapter;
 import com.ifchan.reader.entity.Book;
 import com.ifchan.reader.helper.DataBaseHelper;
-import com.ifchan.reader.utils.RecyclerView.SimpleDividerItemDecoration;
+import com.ifchan.reader.utils.recyclerview.SimpleDividerItemDecoration;
 import com.ifchan.reader.view.NonScrollGridView;
 
 import org.json.JSONArray;

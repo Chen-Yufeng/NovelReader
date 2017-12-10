@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -18,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.testscroll.TextReaderActivity;
 import com.ifchan.reader.adapter.BookRecyclerViewAdapter;
 import com.ifchan.reader.adapter.IndexExpandableListViewAdapter;
 import com.ifchan.reader.entity.Book;
@@ -88,6 +90,7 @@ public class BookDetailsActivity extends AppCompatActivity {
                     haveBeenAdded = true;
                     buttonAdd.setEnabled(false);
                     buttonAdd.setText("已添加");
+                    buttonAdd.setBackgroundColor(Color.GRAY);
                 }
             } while (cursor.moveToNext());
         }
@@ -136,7 +139,7 @@ public class BookDetailsActivity extends AppCompatActivity {
         buttonReading.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startTextReader();
             }
         });
 
@@ -149,6 +152,11 @@ public class BookDetailsActivity extends AppCompatActivity {
         textViewFollowers.setText(Integer.toString(mBook.getLatelyFollower()));
         textViewRetentionRatio.setText(mBook.getRetentionRatio());
         textViewShortIntroduce.setText(mBook.getShortIntro());
+    }
+
+    private void startTextReader() {
+        Intent intent = new Intent(getApplicationContext(), TextReaderActivity.class);
+        startActivity(intent);
     }
 
     private void getBookImage(final Book book) {

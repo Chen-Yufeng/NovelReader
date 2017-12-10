@@ -38,12 +38,6 @@ public class MainActivity extends AppCompatActivity {
         getPermission();
         init();
         initTab();
-        test();
-    }
-
-    private void test() {
-        Intent intent = new Intent(MainActivity.this, TextReaderActivity.class);
-        startActivity(intent);
     }
 
     private void initTab() {

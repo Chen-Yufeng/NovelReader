@@ -60,8 +60,6 @@ public class FragmentBookshelf extends MyBasicFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle
             savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_bookshelf, container, false);
-        initDataBase();
-        loadHistoryFromDateBase();
         initRecyclerView();
         return mView;
     }
@@ -69,6 +67,8 @@ public class FragmentBookshelf extends MyBasicFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initDataBase();
+        loadHistoryFromDateBase();
     }
 
     private void loadHistoryFromDateBase() {
