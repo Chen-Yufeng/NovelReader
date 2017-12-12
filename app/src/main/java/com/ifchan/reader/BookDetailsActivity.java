@@ -14,8 +14,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +29,8 @@ import com.ifchan.reader.adapter.IndexExpandableListViewAdapter;
 import com.ifchan.reader.entity.Book;
 import com.ifchan.reader.entity.Index;
 import com.ifchan.reader.helper.BookshelfDataBaseHelper;
+import com.ifchan.reader.utils.AppUtils;
+import com.ifchan.reader.utils.DeviceUtils;
 import com.ifchan.reader.utils.Utility;
 
 import org.json.JSONArray;
@@ -48,6 +54,7 @@ public class BookDetailsActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case INDEX_LOADED:
+                    initIndexView();
                     renewBookImage();
                     break;
             }
@@ -64,17 +71,23 @@ public class BookDetailsActivity extends AppCompatActivity {
     private boolean haveBeenAdded = false;
     private Button buttonAdd, buttonReading;
     private ImageView imageView;
+    private ScrollView mScrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_details);
 
+        initScrollView();
         receive();
         initBasicBookInfo();
         initDataBase();
         initIndex();
-        test();
+//        test();
+    }
+
+    private void initScrollView() {
+        mScrollView = findViewById(R.id.book_details_scroll_view);
     }
 
 
@@ -215,33 +228,52 @@ public class BookDetailsActivity extends AppCompatActivity {
                     url = new URL("http://api.zhuishushenqi.com/mix-atoc/" + mBook.getId()
                             + "?view=chapters");
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    connection.setConnectTimeout(5000);
-                    connection.setRequestMethod("GET");
-                    connection.setDoOutput(true);
-                    int responseCode = connection.getResponseCode();
-                    if (responseCode == 200) {
-                        inputStream = connection.getInputStream();
+                    connection.setRequestProperty("User-Agent",
+                            "ZhuiShuShenQi/3.40[preload=false;locale=zh_CN;" +
+                                    "clientidbase=android-nvidia]");
+                    connection.setRequestProperty("X-User-Agent",
+                            "ZhuiShuShenQi/3.40[preload=false;locale=zh_CN;" +
+                                    "clientidbase=android-nvidia]");
+                    // may need this header.
+                    connection.setRequestProperty("X-Device-Id", DeviceUtils.getIMEI(AppUtils
+                            .getAppContext()));
+                    connection.setRequestProperty("Host", "api.zhuishushenqi.com");
+                    connection.setRequestProperty("Connection", "Keep-Alive");
+                    connection.setRequestProperty("If-None-Match",
+                            "W/\"2a04-4nguJ+XAaA1yAeFHyxVImg\"");
+                    connection.setRequestProperty("If-Modified-Since", "Tue, 02 Aug 2016 03:20:06" +
+                            " UTC");
+//                    connection.setRequestProperty("Host","api.zhuishushenqi.com");
+//                    connection.setRequestProperty("Connection","keep-alive");
+//                    connection.setRequestProperty("User-Agent","Mozilla/5.0 (X11; Linux x86_64)
+// AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.9 Safari/537.36");
+//                    connection.setConnectTimeout(5000);
+//                    connection.setRequestMethod("GET");
+//                    connection.setDoOutput(true);
+//                    int responseCode = connection.getResponseCode();
+//                    if (responseCode == 200) {
+                    inputStream = connection.getInputStream();
 
-                        BufferedReader reader = new BufferedReader(new InputStreamReader
-                                (inputStream));
-                        StringBuilder builder = new StringBuilder();
-                        String line;
-                        while ((line = reader.readLine()) != null) {
-                            builder.append(line);
-                        }
-                        JSONObject jsonObject = new JSONObject(builder.toString());
-                        JSONObject data = jsonObject.getJSONObject("mixToc");
-                        JSONArray jsonArray = data.getJSONArray("chapters");
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject indexJsonObject = jsonArray.getJSONObject(i);
-                            Index index = new Index(indexJsonObject.getString("title"),
-                                    indexJsonObject.getString("link"));
-                            mIndexList.add(index);
-                        }
-                        Message message = new Message();
-                        message.what = INDEX_LOADED;
-                        mHandler.sendMessage(message);
+                    BufferedReader reader = new BufferedReader(new InputStreamReader
+                            (inputStream));
+                    StringBuilder builder = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        builder.append(line);
                     }
+                    JSONObject jsonObject = new JSONObject(builder.toString());
+                    JSONObject data = jsonObject.getJSONObject("mixToc");
+                    JSONArray jsonArray = data.getJSONArray("chapters");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject indexJsonObject = jsonArray.getJSONObject(i);
+                        Index index = new Index(indexJsonObject.getString("title"),
+                                indexJsonObject.getString("link"));
+                        mIndexList.add(index);
+                    }
+                    Message message = new Message();
+                    message.what = INDEX_LOADED;
+                    mHandler.sendMessage(message);
+//                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -257,28 +289,47 @@ public class BookDetailsActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void test() {
+    private void initIndexView() {
         final ExpandableListView expandableListView = findViewById(R.id
                 .book_details_expandable_list_view);
+        List<String[]> s = new ArrayList<>();
+        int index;
+        for (index = 0; index < mIndexList.size() - 20; index += 20) {
+            String[] temp = new String[20];
+            for (int i = 0; i < 20; i++) {
+                temp[i] = mIndexList.get(index + i).getTitle();
+            }
+            s.add(temp);
+        }
+        String[] temp = new String[mIndexList.size() - index];
+        for(int i = 0;i < mIndexList.size() - index;i++) {
+            temp[i] = mIndexList.get(index + i).getTitle();
+        }
+        s.add(temp);
+        final String[][] indexString = s.toArray(new String[s.size()][]);
+
         final IndexExpandableListViewAdapter adapter = new IndexExpandableListViewAdapter
                 (BookDetailsActivity
-                        .this, new String[][]{{"1", "2", "3", "1", "2", "3", "1", "2", "3"}});
+                        .this, indexString);
         expandableListView.setAdapter(adapter);
+//        Utility.setListViewHeightBasedOnChildren(expandableListView, adapter);
+        setListViewHeight(expandableListView);
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition,
                                         long id) {
-                if (isFloded) {
-                    Utility.setListViewHeightBasedOnChildren(expandableListView, adapter);
-//                    Util.setListViewHeightBasedOnChildren(expandableListView);
-                    isFloded = false;
-                } else {
-                    ViewGroup.LayoutParams params = expandableListView.getLayoutParams();
-                    params.height = 200;
-                    expandableListView.setLayoutParams(params);
-//                    Util.setListViewHeightBasedOnChildren(expandableListView);
-                    isFloded = true;
-                }
+                setListViewHeight(parent,groupPosition);
+//                if (isFloded) {
+//                    ViewGroup.LayoutParams params = expandableListView.getLayoutParams();
+//                    params.height = 65 * indexString.length + 170;
+//                    expandableListView.setLayoutParams(params);
+////                    Util.setListViewHeightBasedOnChildren(expandableListView);
+//                    isFloded = false;
+//                } else {
+//                    Utility.setListViewHeightBasedOnChildren(expandableListView, adapter);
+////                    Util.setListViewHeightBasedOnChildren(expandableListView);
+//                    isFloded = true;
+//                }
                 return false;
             }
         });
@@ -286,7 +337,7 @@ public class BookDetailsActivity extends AppCompatActivity {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int
                     childPosition, long id) {
-                Toast.makeText(BookDetailsActivity.this, "Click", Toast.LENGTH_LONG);
+//                Toast.makeText(BookDetailsActivity.this, "Click", Toast.LENGTH_LONG);
                 return true;
             }
         });
@@ -298,5 +349,58 @@ public class BookDetailsActivity extends AppCompatActivity {
             Bitmap bitmap = BitmapFactory.decodeFile(mBook.getCoverPath());
             imageView.setImageBitmap(bitmap);
         }
+    }
+
+    private void setListViewHeight(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        int totalHeight = 0;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight
+                + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+        listView.requestLayout();
+    }
+
+//如何实现的?
+    private void setListViewHeight(ExpandableListView listView,
+                                   int group) {
+        ExpandableListAdapter listAdapter = (ExpandableListAdapter) listView.getExpandableListAdapter();
+        int totalHeight = 0;
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(),
+                View.MeasureSpec.EXACTLY);
+        for (int i = 0; i < listAdapter.getGroupCount(); i++) {
+            View groupItem = listAdapter.getGroupView(i, false, null, listView);
+            groupItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+
+            totalHeight += groupItem.getMeasuredHeight();
+
+            if (((listView.isGroupExpanded(i)) && (i != group))
+                    || ((!listView.isGroupExpanded(i)) && (i == group))) {
+                for (int j = 0; j < listAdapter.getChildrenCount(i); j++) {
+                    View listItem = listAdapter.getChildView(i, j, false, null,
+                            listView);
+                    listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+
+                    totalHeight += listItem.getMeasuredHeight();
+
+                }
+            }
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        int height = totalHeight
+                + (listView.getDividerHeight() * (listAdapter.getGroupCount() - 1));
+        if (height < 10)
+            height = 200;
+        params.height = height;
+        listView.setLayoutParams(params);
+        listView.requestLayout();
+
     }
 }

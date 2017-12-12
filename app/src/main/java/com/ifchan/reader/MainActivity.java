@@ -13,6 +13,8 @@ import android.view.MenuItem;
 
 import com.example.testscroll.TextReaderActivity;
 import com.ifchan.reader.adapter.MyMainFragmentAdapter;
+import com.ifchan.reader.utils.AppUtils;
+import com.ifchan.reader.utils.PermissionUtils;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -72,12 +74,15 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(MainActivity.this, new
                     String[]{WRITE_EXTERNAL_STORAGE}, 1);
         }
+        PermissionUtils.applyForPhoneStatePermission(this,this);
     }
 
     private void init() {
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar)
                 findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
+
+        AppUtils.init(getApplicationContext());
     }
 
     @Override

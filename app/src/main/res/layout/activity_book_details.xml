@@ -17,6 +17,7 @@
         app:titleTextColor="#ffffff"></android.support.v7.widget.Toolbar>
 
     <ScrollView
+        android:id="@+id/book_details_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

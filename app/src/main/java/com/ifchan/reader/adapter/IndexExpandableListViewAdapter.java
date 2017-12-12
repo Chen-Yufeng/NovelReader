@@ -32,7 +32,7 @@ public class IndexExpandableListViewAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getGroupCount() {
-        return 1;
+        return index.length;
     }
 
     @Override
@@ -42,7 +42,11 @@ public class IndexExpandableListViewAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getGroup(int groupPosition) {
-        return "目录";
+        if (groupPosition == index.length - 1) {
+            return Integer.toString(20 * groupPosition + 1) + "~" + Integer.toString
+                    (20 * groupPosition + index[groupPosition].length);
+        }
+        return Integer.toString(20*groupPosition+1)+"~"+Integer.toString(20*(groupPosition+1));
     }
 
     @Override
@@ -77,7 +81,7 @@ public class IndexExpandableListViewAdapter extends BaseExpandableListAdapter {
         } else {
             groupViewHolder = (GroupViewHolder) convertView.getTag();
         }
-        groupViewHolder.indexTab.setText("目录");
+        groupViewHolder.indexTab.setText((CharSequence) getGroup(groupPosition));
         return convertView;
     }
 

@@ -27,10 +27,10 @@ public class Utility {
             boolean isLastChile = i + 1 == listAdapter.getChildrenCount(0) ? true : false;
             View listItem = listAdapter.getChildView(0, i, isLastChile, null, listView);
             listItem.measure(desiredWidth, MeasureSpec.UNSPECIFIED);
-            totalHeight += listItem.getMeasuredHeight();
+            totalHeight += listItem.getMeasuredHeight() + 125;
         }
         ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + 200;
+        params.height = totalHeight;
         listView.setLayoutParams(params);
         listView.requestLayout();
     }
