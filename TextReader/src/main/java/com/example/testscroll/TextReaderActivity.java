@@ -117,7 +117,6 @@ public class TextReaderActivity extends Activity implements OnClickListener, Tou
         // TODO: 12/9/17 Why?Why?Why?
         LitePalApplication.initialize(getApplicationContext());
         return DataSupport.find(MyPage.class, pageNo) != null;
-//        return false;
     }
 
     //获取该页的结束位置
