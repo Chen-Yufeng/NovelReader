@@ -16,6 +16,7 @@ import com.example.testscroll.view.FlipperLayout;
 import com.example.testscroll.view.FlipperLayout.TouchListener;
 import com.example.testscroll.view.ReadView;
 
+import org.litepal.LitePalApplication;
 import org.litepal.crud.DataSupport;
 
 import java.io.BufferedReader;
@@ -113,9 +114,10 @@ public class TextReaderActivity extends Activity implements OnClickListener, Tou
 
     //该页是否存储
     private boolean isSavePage(int pageNo) {
-        // TODO: 12/9/17 Why?Why?Why? 
-//        return DataSupport.find(MyPage.class, pageNo) != null;
-        return false;
+        // TODO: 12/9/17 Why?Why?Why?
+        LitePalApplication.initialize(getApplicationContext());
+        return DataSupport.find(MyPage.class, pageNo) != null;
+//        return false;
     }
 
     //获取该页的结束位置
