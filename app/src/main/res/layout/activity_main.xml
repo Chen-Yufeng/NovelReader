@@ -24,7 +24,7 @@
         <android.support.design.widget.TabLayout
             android:id="@+id/main_tabLayout"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="50dp"
             android:background="@color/colorMyTheme"
             app:tabIndicatorColor="@color/colorIndicator"
             app:tabIndicatorHeight="5dp"
@@ -48,6 +48,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:menu="@menu/main_drawer" />
+        app:menu="@menu/main_drawer"
+        app:headerLayout="@layout/nav_header_test"
+        />
 
 </android.support.v4.widget.DrawerLayout>

@@ -64,11 +64,11 @@ public class AllClassBookViewerActivity extends AppCompatActivity implements MyB
         five = mTabLayout.getTabAt(4);
 
         //设置Tab的图标，假如不需要则把下面的代码删去
-        one.setIcon(R.mipmap.ic_launcher);
-        two.setIcon(R.mipmap.ic_launcher);
-        three.setIcon(R.mipmap.ic_launcher);
-        four.setIcon(R.mipmap.ic_launcher);
-        five.setIcon(R.mipmap.ic_launcher);
+//        one.setIcon(R.mipmap.ic_launcher);
+//        two.setIcon(R.mipmap.ic_launcher);
+//        three.setIcon(R.mipmap.ic_launcher);
+//        four.setIcon(R.mipmap.ic_launcher);
+//        five.setIcon(R.mipmap.ic_launcher);
 
     }
 

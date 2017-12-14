@@ -2,7 +2,6 @@ package com.ifchan.reader;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -11,18 +10,16 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.testscroll.TextReaderActivity;
 import com.ifchan.reader.adapter.MyMainFragmentAdapter;
 import com.ifchan.reader.utils.AppUtils;
 import com.ifchan.reader.utils.CacheUtil;
 import com.ifchan.reader.utils.PermissionUtils;
-
-import java.io.File;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -40,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView
     private TabLayout.Tab one;
     private TabLayout.Tab two;
     private TabLayout.Tab three;
+    DrawerLayout mDrawerLayout;
+    android.support.v7.widget.Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +66,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView
         three = mTabLayout.getTabAt(2);
 
         //设置Tab的图标，假如不需要则把下面的代码删去
-        one.setIcon(R.mipmap.ic_launcher);
-        two.setIcon(R.mipmap.ic_launcher);
-        three.setIcon(R.mipmap.ic_launcher);
+//        one.setIcon(R.mipmap.ic_launcher);
+//        two.setIcon(R.mipmap.ic_launcher);
+//        three.setIcon(R.mipmap.ic_launcher);
     }
 
 
@@ -88,9 +87,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView
     }
 
     private void init() {
-        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar)
+        mToolbar = (android.support.v7.widget.Toolbar)
                 findViewById(R.id.main_toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
 
         AppUtils.init(getApplicationContext());
     }
@@ -114,6 +113,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView
     }
 
     private void initDrawerView() {
+        mDrawerLayout = findViewById(R.id.main_drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,mDrawerLayout,mToolbar,R
+                .string.navigation_drawer_open,R.string.navigation_drawer_close);
+        mDrawerLayout.setDrawerListener(toggle);
+        toggle.syncState();
+
         NavigationView navigationView = findViewById(R.id.main_navigation);
         navigationView.setNavigationItemSelectedListener(this);
     }
@@ -124,13 +129,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView
             case R.id.main_drawer_menu_clear_cache:
                 CacheUtil.clearImageCache();
                 CacheUtil.clearRichTextCache();
+                CacheUtil.clearSearchHistory(MainActivity.this);
                 break;
             case R.id.main_drawer_menu_clear_bookshelf:
 
                 break;
         }
-        DrawerLayout drawerLayout = findViewById(R.id.main_drawer_layout);
-        drawerLayout.closeDrawer(GravityCompat.START);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 }

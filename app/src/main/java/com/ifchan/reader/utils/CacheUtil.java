@@ -1,6 +1,12 @@
 package com.ifchan.reader.utils;
 
+import android.content.Context;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
+
+import com.ifchan.reader.helper.BookshelfDataBaseHelper;
+import com.ifchan.reader.helper.DataBaseHelper;
 
 import java.io.File;
 
@@ -9,6 +15,8 @@ import java.io.File;
  */
 
 public class CacheUtil {
+    private static DataBaseHelper sDataBaseHelper;
+    private static BookshelfDataBaseHelper sBookshelfDataBaseHelper;
     private static final String TEMP_PATH = Environment.getExternalStorageDirectory()
             .getAbsolutePath() + "/Reader/temp";
 
@@ -30,5 +38,17 @@ public class CacheUtil {
                 new File(dir2, children[i]).delete();
             }
         }
+    }
+
+    public static void clearSearchHistory(Context context) {
+        sDataBaseHelper = DataBaseHelper.getInstance(context);
+        SQLiteDatabase db = sDataBaseHelper.getWritableDatabase();
+        sDataBaseHelper.removeAllColumns(db);
+    }
+
+    public static void clearBookDateBase(Context context) {
+        sBookshelfDataBaseHelper = BookshelfDataBaseHelper.getInstance(context);
+        SQLiteDatabase db = sBookshelfDataBaseHelper.getWritableDatabase();
+        sBookshelfDataBaseHelper.removeAllColumns(db);
     }
 }
