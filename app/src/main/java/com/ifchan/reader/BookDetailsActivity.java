@@ -32,6 +32,7 @@ import com.ifchan.reader.helper.BookshelfDataBaseHelper;
 import com.ifchan.reader.utils.AppUtils;
 import com.ifchan.reader.utils.DeviceUtils;
 import com.ifchan.reader.utils.Utility;
+import com.ifchan.reader.utils.novel.HeaderUtil;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -228,21 +229,7 @@ public class BookDetailsActivity extends AppCompatActivity {
                     url = new URL("http://api.zhuishushenqi.com/mix-atoc/" + mBook.getId()
                             + "?view=chapters");
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    connection.setRequestProperty("User-Agent",
-                            "ZhuiShuShenQi/3.40[preload=false;locale=zh_CN;" +
-                                    "clientidbase=android-nvidia]");
-                    connection.setRequestProperty("X-User-Agent",
-                            "ZhuiShuShenQi/3.40[preload=false;locale=zh_CN;" +
-                                    "clientidbase=android-nvidia]");
-                    // may need this header.
-                    connection.setRequestProperty("X-Device-Id", DeviceUtils.getIMEI(AppUtils
-                            .getAppContext()));
-                    connection.setRequestProperty("Host", "api.zhuishushenqi.com");
-                    connection.setRequestProperty("Connection", "Keep-Alive");
-                    connection.setRequestProperty("If-None-Match",
-                            "W/\"2a04-4nguJ+XAaA1yAeFHyxVImg\"");
-                    connection.setRequestProperty("If-Modified-Since", "Tue, 02 Aug 2016 03:20:06" +
-                            " UTC");
+                    HeaderUtil.setConnectionHeader(connection);
 //                    connection.setRequestProperty("Host","api.zhuishushenqi.com");
 //                    connection.setRequestProperty("Connection","keep-alive");
 //                    connection.setRequestProperty("User-Agent","Mozilla/5.0 (X11; Linux x86_64)

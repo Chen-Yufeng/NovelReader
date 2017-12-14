@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 import com.ifchan.reader.R;
 import com.ifchan.reader.adapter.BookRecyclerViewAdapter;
 import com.ifchan.reader.entity.Book;
+import com.ifchan.reader.listener.EndlessRecyclerOnScrollListener;
+import com.ifchan.reader.utils.novel.HeaderUtil;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -26,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -41,6 +44,7 @@ import java.util.List;
 public class FragmentHot extends MyBasicFragment {
 
     private static final int IMAGE_LOADED = 1;
+    private static final int LOAD_MORE_COMPLETE = 2;
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
@@ -48,11 +52,14 @@ public class FragmentHot extends MyBasicFragment {
                 case 0:
                     sortBook(mBookList);
                     refreshRecyclerView();
-                    getBookImage(mBookList);
+//                    getBookImage(mBookList); 放弃使用
 //                    initRecyclerView();
                     break;
                 case IMAGE_LOADED:
                     mBookRecyclerViewAdapter.notifyItemChanged(msg.arg1);
+                    break;
+                case LOAD_MORE_COMPLETE:
+                    mBookRecyclerViewAdapter.setLoadState(BookRecyclerViewAdapter.LOADING_COMPLETE);
                     break;
             }
         }
@@ -79,7 +86,8 @@ public class FragmentHot extends MyBasicFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getJSON();
+//        getJSON();
+        loadMore(0, 20);
     }
 
     @Override
@@ -129,7 +137,7 @@ public class FragmentHot extends MyBasicFragment {
                         String shortIntro = jsonObjectBook.getString("shortIntro");
                         String cover = jsonObjectBook.getString("cover");
                         cover = URLDecoder.decode(cover);
-                        cover = cover.substring(cover.indexOf('h'),cover.lastIndexOf('/'));
+                        cover = cover.substring(cover.indexOf('h'), cover.lastIndexOf('/'));
                         String coverPath = imageTemp.getPath() + "/" +
                                 id + ".jpg";
                         String site = jsonObjectBook.getString("site");
@@ -138,7 +146,8 @@ public class FragmentHot extends MyBasicFragment {
                         String retentionRatio = Integer.toString(jsonObjectBook.getInt
                                 ("retentionRatio"));
                         Book book = new Book(id, title, author, shortIntro, cover, site, banned,
-                                latelyFollower, retentionRatio, jsonObjectBook.getString("majorCate"));
+                                latelyFollower, retentionRatio, jsonObjectBook.getString
+                                ("majorCate"));
                         book.setCoverPath(coverPath);
                         mBookList.add(book);
                     }
@@ -207,8 +216,96 @@ public class FragmentHot extends MyBasicFragment {
         RecyclerView recyclerView = mView.findViewById(R.id.fragment_hot_recycler_view);
         mBookRecyclerViewAdapter = new BookRecyclerViewAdapter(mBookList,
                 getActivity());
+        mBookRecyclerViewAdapter.setEnableFooter(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(mBookRecyclerViewAdapter);
+
+        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
+            @Override
+            public void onLoadMore() {
+                mBookRecyclerViewAdapter.setLoadState(BookRecyclerViewAdapter.LOADING);
+                loadMore(mBookList.size(), 10);
+            }
+        });
+    }
+
+    private void loadMore(final int start, final int limit) {
+        if (start >= 100) {
+            mBookRecyclerViewAdapter.setLoadState(BookRecyclerViewAdapter.LOADING_END);
+            return;
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                URL url;
+                InputStream inputStream = null;
+                try {
+                    url = new URL("http://api.zhuishushenqi" +
+                            ".com/book/by-categories?gender=" + URLEncoder.encode
+                            (mOnAttachedListener
+                                    .getSex(), "UTF-8")
+                            + "&type=hot&major=" + URLEncoder.encode(mOnAttachedListener.getType
+                            (), "UTF-8") +
+                            "&minor=&start=" + start + "&limit=" + limit);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    HeaderUtil.setConnectionHeader(connection);
+                    inputStream = connection.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                    StringBuilder builder = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        builder.append(line);
+                    }
+                    JSONObject jsonObject = new JSONObject(builder.toString());
+                    JSONArray books = jsonObject.getJSONArray("books");
+                    File externalFolder = Environment.getExternalStorageDirectory();
+                    File imageTemp = new File(externalFolder.getPath() + "/Reader/temp/cover");
+                    if (!imageTemp.exists()) {
+                        imageTemp.mkdirs();
+                    }
+                    for (int i = 0; i < books.length(); i++) {
+                        JSONObject jsonObjectBook = books.getJSONObject(i);
+                        String id = jsonObjectBook.getString("_id");
+                        String title = jsonObjectBook.getString("title");
+                        String author = jsonObjectBook.getString("author");
+                        String shortIntro = jsonObjectBook.getString("shortIntro");
+                        String cover = jsonObjectBook.getString("cover");
+                        cover = URLDecoder.decode(cover);
+                        cover = cover.substring(cover.indexOf('h'), cover.lastIndexOf('/'));
+                        String coverPath = imageTemp.getPath() + "/" +
+                                id + ".jpg";
+                        String site = jsonObjectBook.getString("site");
+                        int banned = jsonObjectBook.getInt("banned");
+                        int latelyFollower = jsonObjectBook.getInt("latelyFollower");
+                        String retentionRatio = Integer.toString(jsonObjectBook.getInt
+                                ("retentionRatio"));
+                        Book book = new Book(id, title, author, shortIntro, cover, site, banned,
+                                latelyFollower, retentionRatio, jsonObjectBook.getString
+                                ("majorCate"));
+                        book.setCoverPath(coverPath);
+                        mBookList.add(book);
+                        Message message = new Message();
+                        if (start == 20) {
+                            message.what = 0;
+                            mHandler.sendMessage(message);
+                            return;
+                        }
+                        message.what = LOAD_MORE_COMPLETE;
+                        mHandler.sendMessage(message);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        if (inputStream != null) {
+                            inputStream.close();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
     }
 }

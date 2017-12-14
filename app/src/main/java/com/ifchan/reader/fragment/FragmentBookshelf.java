@@ -20,6 +20,7 @@ import com.ifchan.reader.R;
 import com.ifchan.reader.adapter.BookRecyclerViewAdapter;
 import com.ifchan.reader.entity.Book;
 import com.ifchan.reader.helper.BookshelfDataBaseHelper;
+import com.ifchan.reader.listener.EndlessRecyclerOnScrollListener;
 import com.ifchan.reader.utils.imagechcheutils.MyBitmapUtils;
 
 import java.io.FileOutputStream;
@@ -33,7 +34,6 @@ import java.util.List;
  * Created by daily on 11/25/17.
  */
 
-// TODO: 重复加载!
 
 public class FragmentBookshelf extends MyBasicFragment {
 
@@ -152,5 +152,6 @@ public class FragmentBookshelf extends MyBasicFragment {
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
+
     }
 }
