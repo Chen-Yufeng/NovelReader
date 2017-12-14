@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.ifchan.reader.BookDetailsActivity;
 import com.ifchan.reader.R;
 import com.ifchan.reader.entity.Book;
+import com.ifchan.reader.utils.imagechcheutils.MyBitmapUtils;
 
 import java.io.File;
 import java.io.InputStream;
@@ -64,11 +65,12 @@ public class BookRecyclerViewAdapter extends RecyclerView.Adapter<BookRecyclerVi
         holder.shortIntro.setText(book.getShortIntro());
         holder.stat.setText(book.getLatelyFollower() + "人在追 | " + book.getRetentionRatio() +
                 "%读者存留");
-        File file = new File(book.getCoverPath());
-        if (file.exists()) {
-            Bitmap bitmap = BitmapFactory.decodeFile(book.getCoverPath());
-            holder.mImageView.setImageBitmap(bitmap);
-        }
+//        File file = new File(book.getCoverPath());
+//        if (file.exists()) {
+//            Bitmap bitmap = BitmapFactory.decodeFile(book.getCoverPath());
+//            holder.mImageView.setImageBitmap(bitmap);
+//        }
+        new MyBitmapUtils().disPlay(holder.mImageView,book.getCover());
     }
 
     @Override

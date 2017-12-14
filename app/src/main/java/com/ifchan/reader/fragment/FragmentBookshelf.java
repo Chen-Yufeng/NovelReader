@@ -20,6 +20,7 @@ import com.ifchan.reader.R;
 import com.ifchan.reader.adapter.BookRecyclerViewAdapter;
 import com.ifchan.reader.entity.Book;
 import com.ifchan.reader.helper.BookshelfDataBaseHelper;
+import com.ifchan.reader.utils.imagechcheutils.MyBitmapUtils;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -42,7 +43,6 @@ public class FragmentBookshelf extends MyBasicFragment {
     BookRecyclerViewAdapter mBookRecyclerViewAdapter;
     private BookshelfDataBaseHelper mDataBaseHelper;
     private SQLiteDatabase db;
-    private int lastBookCount = -1;
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
@@ -106,48 +106,6 @@ public class FragmentBookshelf extends MyBasicFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-    }
-
-    private void getBookImage(final List<Book> books) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                InputStream imageInputStream = null;
-                FileOutputStream fileOutputStream = null;
-                int count = 0;
-                for (Book book : books) {
-                    URL imageUrl;
-                    try {
-                        imageUrl = new URL(book.getCover());
-                        imageInputStream = imageUrl.openStream();
-                        fileOutputStream = new FileOutputStream(book.getCoverPath());
-                        byte[] bytes = new byte[512];
-                        int read;
-                        while ((read = imageInputStream.read(bytes)) != -1) {
-                            fileOutputStream.write(bytes, 0, read);
-                        }
-                        Message message = new Message();
-                        message.what = IMAGE_LOADED;
-                        message.arg1 = count;
-                        count++;
-                        mHandler.sendMessage(message);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } finally {
-                        try {
-                            if (imageInputStream != null) {
-                                imageInputStream.close();
-                            }
-                            if (fileOutputStream != null) {
-                                fileOutputStream.close();
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-        }).start();
     }
 
     private void initRecyclerView() {
