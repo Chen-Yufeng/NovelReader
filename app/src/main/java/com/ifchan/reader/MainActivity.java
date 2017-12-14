@@ -2,10 +2,15 @@ package com.ifchan.reader;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,12 +19,16 @@ import android.view.MenuItem;
 import com.example.testscroll.TextReaderActivity;
 import com.ifchan.reader.adapter.MyMainFragmentAdapter;
 import com.ifchan.reader.utils.AppUtils;
+import com.ifchan.reader.utils.CacheUtil;
 import com.ifchan.reader.utils.PermissionUtils;
+
+import java.io.File;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView
+        .OnNavigationItemSelectedListener {
 
     public static final String INTENT_MODE = "INTENT_MODE";
     public static final int INTENT_MODE_HOT_BOOK = 1;
@@ -40,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         getPermission();
         init();
         initTab();
+        initDrawerView();
     }
 
     private void initTab() {
@@ -101,5 +111,26 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void initDrawerView() {
+        NavigationView navigationView = findViewById(R.id.main_navigation);
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.main_drawer_menu_clear_cache:
+                CacheUtil.clearImageCache();
+                CacheUtil.clearRichTextCache();
+                break;
+            case R.id.main_drawer_menu_clear_bookshelf:
+
+                break;
+        }
+        DrawerLayout drawerLayout = findViewById(R.id.main_drawer_layout);
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
     }
 }
