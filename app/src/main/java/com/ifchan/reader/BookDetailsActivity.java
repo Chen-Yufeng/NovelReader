@@ -32,6 +32,7 @@ import com.ifchan.reader.helper.BookshelfDataBaseHelper;
 import com.ifchan.reader.utils.AppUtils;
 import com.ifchan.reader.utils.DeviceUtils;
 import com.ifchan.reader.utils.Utility;
+import com.ifchan.reader.utils.imagechcheutils.MyBitmapUtils;
 import com.ifchan.reader.utils.novel.HeaderUtil;
 
 import org.json.JSONArray;
@@ -174,43 +175,44 @@ public class BookDetailsActivity extends AppCompatActivity {
     }
 
     private void getBookImage(final Book book) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                InputStream imageInputStream = null;
-                FileOutputStream fileOutputStream = null;
-                int count = 0;
-                URL imageUrl;
-                try {
-                    imageUrl = new URL(book.getCover());
-                    imageInputStream = imageUrl.openStream();
-                    fileOutputStream = new FileOutputStream(book.getCoverPath());
-                    byte[] bytes = new byte[512];
-                    int read;
-                    while ((read = imageInputStream.read(bytes)) != -1) {
-                        fileOutputStream.write(bytes, 0, read);
-                    }
-                    Message message = new Message();
-                    message.what = IMAGE_LOADED;
-                    message.arg1 = count;
-                    count++;
-                    mHandler.sendMessage(message);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    try {
-                        if (imageInputStream != null) {
-                            imageInputStream.close();
-                        }
-                        if (fileOutputStream != null) {
-                            fileOutputStream.close();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                InputStream imageInputStream = null;
+//                FileOutputStream fileOutputStream = null;
+//                int count = 0;
+//                URL imageUrl;
+//                try {
+//                    imageUrl = new URL(book.getCover());
+//                    imageInputStream = imageUrl.openStream();
+//                    fileOutputStream = new FileOutputStream(book.getCoverPath());
+//                    byte[] bytes = new byte[512];
+//                    int read;
+//                    while ((read = imageInputStream.read(bytes)) != -1) {
+//                        fileOutputStream.write(bytes, 0, read);
+//                    }
+//                    Message message = new Message();
+//                    message.what = IMAGE_LOADED;
+//                    message.arg1 = count;
+//                    count++;
+//                    mHandler.sendMessage(message);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                } finally {
+//                    try {
+//                        if (imageInputStream != null) {
+//                            imageInputStream.close();
+//                        }
+//                        if (fileOutputStream != null) {
+//                            fileOutputStream.close();
+//                        }
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }).start();
+        new MyBitmapUtils().disPlay(imageView, book.getCover());
     }
 
     private void initIndex() {

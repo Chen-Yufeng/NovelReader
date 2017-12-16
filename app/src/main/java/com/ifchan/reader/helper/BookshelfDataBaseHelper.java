@@ -52,6 +52,15 @@ public class BookshelfDataBaseHelper extends SQLiteOpenHelper {
                         (latelyFollower), retentionRatio, majorCate});
     }
 
+    public void refresh(String position,String cover,String latelyFollower,String retentionRatio,
+                        SQLiteDatabase
+            db) {
+        db.execSQL("update Bookshelf set cover = ? where id = ?",new String[]{cover,position});
+        db.execSQL("update Bookshelf set latelyFollower = ? where id = ?",new String[]{latelyFollower,position});
+        db.execSQL("update Bookshelf set retentionRatio = ? where id = ?",new String[]{retentionRatio,position});
+
+    }
+
     public void delFromBookshelf(int position, SQLiteDatabase db) {
         db.execSQL("delete from Bookshelf where id = ?", new String[]{Integer.toString(position)});
         //后续要优化（触发器？？？）

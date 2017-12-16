@@ -4,9 +4,9 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ifchan.reader.pullrefreshlayout.MainActivity">
+    tools:context="com.ifchan.reader.pullrefreshlayout.TestMainActivity">
 
-    <com.mintmedical.refresh.PullRefreshLayout
+    <com.ifchan.reader.pullrefreshlayout.PullRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -15,5 +15,5 @@
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </com.mintmedical.refresh.PullRefreshLayout>
+    </com.ifchan.reader.pullrefreshlayout.PullRefreshLayout>
 </RelativeLayout>

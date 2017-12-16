@@ -45,4 +45,8 @@ public class MyBitmapUtils {
         //网络缓存
         mNetCacheUtils.getBitmapFromNet(ivPic,url);
     }
+
+    private void refresh(ImageView ivPic, String url) {
+        mNetCacheUtils.getBitmapFromNet(ivPic,url);
+    }
 }

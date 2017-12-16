@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Canvas;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,18 +16,29 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 
 import com.ifchan.reader.R;
 import com.ifchan.reader.adapter.BookRecyclerViewAdapter;
 import com.ifchan.reader.entity.Book;
 import com.ifchan.reader.helper.BookshelfDataBaseHelper;
+import com.ifchan.reader.helper.DataBaseHelper;
 import com.ifchan.reader.listener.EndlessRecyclerOnScrollListener;
+import com.ifchan.reader.pullrefreshlayout.PullRefreshLayout;
 import com.ifchan.reader.utils.imagechcheutils.MyBitmapUtils;
+import com.ifchan.reader.utils.novel.HeaderUtil;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,6 +72,7 @@ public class FragmentBookshelf extends MyBasicFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle
             savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_bookshelf, container, false);
+        initPullToRefresh();
         initRecyclerView();
         return mView;
     }
@@ -153,5 +166,70 @@ public class FragmentBookshelf extends MyBasicFragment {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
+    }
+
+    private void initPullToRefresh() {
+        final PullRefreshLayout layout = mView.findViewById(R.id.fragment_hot_pullrefreshlayout);
+        layout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new AsyncTask<Object, String, Void>() {
+
+                    @Override
+                    protected void onProgressUpdate(String... values) {
+                        super.onProgressUpdate(values);
+                        mBookRecyclerViewAdapter.notifyDataSetChanged();
+                        mDataBaseHelper.refresh(values[0], values[1], values[2], values[3], db);
+                    }
+
+                    @Override
+                    protected void onPostExecute(Void aVoid) {
+                        super.onPostExecute(aVoid);
+                        layout.setRefreshing(false);
+                    }
+
+                    @Override
+                    protected Void doInBackground(Object... objects) {
+                        if (objects[0] instanceof List) {
+                            List<Book> books = (List<Book>) objects[0];
+                            int count = 0;
+                            for (Book book : books) {
+                                count++;
+                                String url = "http://api.zhuishushenqi.com/book/" + book.getId();
+                                try {
+                                    URL aURL = new URL(url);
+                                    HttpURLConnection connection = (HttpURLConnection) aURL
+                                            .openConnection();
+                                    HeaderUtil.setConnectionHeader(connection);
+                                    InputStream inputStream = connection.getInputStream();
+                                    BufferedReader reader = new BufferedReader(new
+                                            InputStreamReader(inputStream));
+                                    String line;
+                                    StringBuilder builder = new StringBuilder();
+                                    while ((line = reader.readLine()) != null) {
+                                        builder.append(line);
+                                    }
+                                    JSONObject received = new JSONObject(builder.toString());
+                                    String cover = received.getString("cover");
+                                    cover = URLDecoder.decode(cover.substring(cover.indexOf('h'),
+                                            cover
+                                                    .lastIndexOf
+                                                            ('%')), "UTF-8");
+                                    book.setCover(cover);
+                                    book.setLatelyFollower(Integer.parseInt(received.getString
+                                            ("latelyFollower")));
+                                    book.setRetentionRatio(received.getString("retentionRatio"));
+                                    publishProgress(Integer.toString(count), cover, received
+                                            .getString("latelyFollower"), received.getString("retentionRatio"));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                        return null;
+                    }
+                }.execute(mBookList);
+            }
+        });
     }
 }
