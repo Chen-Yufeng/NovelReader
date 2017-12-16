@@ -21,7 +21,6 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.testscroll.TextReaderActivity;
 import com.ifchan.reader.adapter.BookRecyclerViewAdapter;
@@ -29,18 +28,15 @@ import com.ifchan.reader.adapter.IndexExpandableListViewAdapter;
 import com.ifchan.reader.entity.Book;
 import com.ifchan.reader.entity.Index;
 import com.ifchan.reader.helper.BookshelfDataBaseHelper;
-import com.ifchan.reader.utils.AppUtils;
-import com.ifchan.reader.utils.DeviceUtils;
-import com.ifchan.reader.utils.Utility;
 import com.ifchan.reader.utils.imagechcheutils.MyBitmapUtils;
 import com.ifchan.reader.utils.novel.HeaderUtil;
+import com.ifchan.reader.utils.novel.NovelTextGetter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -58,10 +54,12 @@ public class BookDetailsActivity extends AppCompatActivity {
                 case INDEX_LOADED:
                     initIndexView();
                     renewBookImage();
+                    buttonAdd.setEnabled(true);
                     break;
             }
         }
     };
+    private int indexCount;
     private final String TAG = "@vir BookDetailsActivity";
     private static final int INDEX_LOADED = 0;
     private Book mBook;
@@ -74,6 +72,7 @@ public class BookDetailsActivity extends AppCompatActivity {
     private Button buttonAdd, buttonReading;
     private ImageView imageView;
     private ScrollView mScrollView;
+    private NovelTextGetter mNovelTextGetter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +84,12 @@ public class BookDetailsActivity extends AppCompatActivity {
         initBasicBookInfo();
         initDataBase();
         initIndex();
-//        test();
+        loadIndex();
+    }
+
+    private void loadIndex() {
+        mNovelTextGetter = new NovelTextGetter();
+        mNovelTextGetter.downloadIndexList(mBook.getId());
     }
 
     private void initScrollView() {
@@ -134,6 +138,7 @@ public class BookDetailsActivity extends AppCompatActivity {
         }
 
         buttonAdd = findViewById(R.id.book_details_add_to_follow_list);
+        buttonAdd.setEnabled(false);
         buttonReading = findViewById(R.id.book_details_start_reading_button);
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,9 +147,9 @@ public class BookDetailsActivity extends AppCompatActivity {
                     mDataBaseHelper.addToBookshelf(db, databaseSize + 1, mBook.getId(), mBook
                                     .getTitle(), mBook.getAuthor(), mBook.getShortIntro(), mBook
                                     .getCover(),
-
                             mBook.getCoverPath(), mBook.getSite(), mBook.getLatelyFollower(), mBook
-                                    .getRetentionRatio(), mBook.getMajorCate());
+                                    .getRetentionRatio(), mBook.getMajorCate(), Integer.toString
+                                    (indexCount));
                     databaseSize++;
                     buttonAdd.setText("已添加");
                     buttonAdd.setEnabled(false);
@@ -175,43 +180,6 @@ public class BookDetailsActivity extends AppCompatActivity {
     }
 
     private void getBookImage(final Book book) {
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                InputStream imageInputStream = null;
-//                FileOutputStream fileOutputStream = null;
-//                int count = 0;
-//                URL imageUrl;
-//                try {
-//                    imageUrl = new URL(book.getCover());
-//                    imageInputStream = imageUrl.openStream();
-//                    fileOutputStream = new FileOutputStream(book.getCoverPath());
-//                    byte[] bytes = new byte[512];
-//                    int read;
-//                    while ((read = imageInputStream.read(bytes)) != -1) {
-//                        fileOutputStream.write(bytes, 0, read);
-//                    }
-//                    Message message = new Message();
-//                    message.what = IMAGE_LOADED;
-//                    message.arg1 = count;
-//                    count++;
-//                    mHandler.sendMessage(message);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                } finally {
-//                    try {
-//                        if (imageInputStream != null) {
-//                            imageInputStream.close();
-//                        }
-//                        if (fileOutputStream != null) {
-//                            fileOutputStream.close();
-//                        }
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        }).start();
         new MyBitmapUtils().disPlay(imageView, book.getCover());
     }
 
@@ -253,6 +221,7 @@ public class BookDetailsActivity extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(builder.toString());
                     JSONObject data = jsonObject.getJSONObject("mixToc");
                     JSONArray jsonArray = data.getJSONArray("chapters");
+                    indexCount = jsonArray.length();
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject indexJsonObject = jsonArray.getJSONObject(i);
                         Index index = new Index(indexJsonObject.getString("title"),
@@ -326,7 +295,9 @@ public class BookDetailsActivity extends AppCompatActivity {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int
                     childPosition, long id) {
-//                Toast.makeText(BookDetailsActivity.this, "Click", Toast.LENGTH_LONG);
+                if (mNovelTextGetter.isLoaded()) {
+                    mNovelTextGetter.download(groupPosition * 20 + childPosition);
+                }
                 return true;
             }
         });

@@ -2,6 +2,7 @@ package com.ifchan.reader.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.GridLayoutManager;
@@ -19,12 +20,14 @@ import android.widget.TextView;
 import com.ifchan.reader.BookDetailsActivity;
 import com.ifchan.reader.R;
 import com.ifchan.reader.entity.Book;
+import com.ifchan.reader.helper.BookshelfDataBaseHelper;
 import com.ifchan.reader.utils.imagechcheutils.MyBitmapUtils;
 
 import java.io.File;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -36,7 +39,11 @@ public class BookRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     public static final String INTENT_BOOK_FOR_DETAILS = "INTENT_BOOK_FOR_DETAILS";
     private final String TAG = "@vir BRVAdapter";
     private List<Book> mBookList;
+    private boolean[] hasNew;
+    private int[] latestChapterCount;
     private Context mContext;
+    private BookshelfDataBaseHelper mDataBaseHelper = BookshelfDataBaseHelper.getInstance(mContext);
+    private SQLiteDatabase db = mDataBaseHelper.getWritableDatabase();
     // 普通布局
     private final int TYPE_ITEM = 1;
     // 脚布局
@@ -58,12 +65,27 @@ public class BookRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         mContext = context;
     }
 
+    public void setHasNew(boolean[] hasNew) {
+        this.hasNew = hasNew;
+    }
+
+    public void setLatestChapterCount(int[] latestChapterCount) {
+        this.latestChapterCount = latestChapterCount;
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_ITEM) {
             View view = LayoutInflater.from(mContext).inflate(R.layout.item_book, parent
                     , false);
             final ViewHolder holder = new ViewHolder(view);
+            if (hasNew != null) {
+                if (hasNew[holder.getAdapterPosition()]) {
+                    holder.newChapters.setVisibility(View.VISIBLE);
+                } else {
+                    holder.newChapters.setVisibility(View.GONE);
+                }
+            }
             holder.bookView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -71,6 +93,10 @@ public class BookRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     intent.putExtra(INTENT_BOOK_FOR_DETAILS, mBookList.get(holder.getAdapterPosition
                             ()));
                     mContext.startActivity(intent);
+                    if (hasNew != null && hasNew[holder.getAdapterPosition()]) {
+                        mDataBaseHelper.renewLastGetChapter(holder.getAdapterPosition() + 1,
+                                Integer.toString(latestChapterCount[holder.getAdapterPosition()]),db);
+                    }
                 }
             });
 
@@ -172,6 +198,7 @@ public class BookRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         private TextView author;
         private TextView shortIntro;
         private TextView stat;
+        private TextView newChapters;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -181,6 +208,7 @@ public class BookRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             author = itemView.findViewById(R.id.item_book_book_author);
             shortIntro = itemView.findViewById(R.id.item_book_book_short_intro);
             stat = itemView.findViewById(R.id.item_book_book_stat);
+            newChapters = itemView.findViewById(R.id.item_book_new_text_view);
         }
     }
 

@@ -18,7 +18,7 @@ public class BookshelfDataBaseHelper extends SQLiteOpenHelper {
     public static final String CREATE_Bookshelf = "create table Bookshelf(" +
             "id integer primary key, bookid text, title text, author text, shortIntro text, cover" +
             " text, coverPath text, site text, latelyFollower text, " +
-            "retentionRatio text, majorCate text)";
+            "retentionRatio text, majorCate text, lastGetChapter integer)";
 
     public BookshelfDataBaseHelper(Context context) {
         super(context, NAME, null, VERSION);
@@ -43,13 +43,14 @@ public class BookshelfDataBaseHelper extends SQLiteOpenHelper {
 
     public void addToBookshelf(SQLiteDatabase db, int position, String id, String title, String
             author, String shortIntro, String cover, String coverPath, String site,
-                               int latelyFollower, String retentionRatio, String majorCate) {
+                               int latelyFollower, String retentionRatio, String majorCate,
+                               String lastGetChapter) {
         db.execSQL("insert into Bookshelf (id, bookid, title, author, shortIntro, cover, " +
-                        "coverPath, site, latelyFollower, retentionRatio, majorCate) " +
-                        "values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                        "coverPath, site, latelyFollower, retentionRatio, majorCate, lastGetChapter) " +
+                        "values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
                 , new String[]{Integer.toString(position), id, title, author, shortIntro, cover,
                         coverPath, site, Integer.toString
-                        (latelyFollower), retentionRatio, majorCate});
+                        (latelyFollower), retentionRatio, majorCate, lastGetChapter});
     }
 
     public void refresh(String position,String cover,String latelyFollower,String retentionRatio,
@@ -59,6 +60,11 @@ public class BookshelfDataBaseHelper extends SQLiteOpenHelper {
         db.execSQL("update Bookshelf set latelyFollower = ? where id = ?",new String[]{latelyFollower,position});
         db.execSQL("update Bookshelf set retentionRatio = ? where id = ?",new String[]{retentionRatio,position});
 
+    }
+
+    public void renewLastGetChapter(int id, String lastGetChapter, SQLiteDatabase db) {
+        db.execSQL("update Bookshelf set lastGetChapter = ? where id = ?",new
+                String[]{Integer.toString(id), lastGetChapter});
     }
 
     public void delFromBookshelf(int position, SQLiteDatabase db) {
