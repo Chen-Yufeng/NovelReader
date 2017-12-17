@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:text="第1章"
+            android:textColor="@color/colorHintText"
+            android:id="@+id/activity_my_txt_reader_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.ifchan.reader.view.TxtView
+            android:id="@+id/activity_my_txt_reader_txtview"
+            android:paddingTop="30dp"
+            android:paddingBottom="30dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="TEST\nTEST"
+            android:lineSpacingExtra="5sp"
+            android:textSize="17sp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

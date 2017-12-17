@@ -53,7 +53,7 @@ public class NovelTextGetter {
         isLoaded = loaded;
     }
 
-    public void download(final int indexNum) {
+    public void download(final String folderName, final int indexNum) {
         new AsyncTask<Void, Void, Void>() {
 
             @Override
@@ -97,7 +97,8 @@ public class NovelTextGetter {
                     JSONObject jsonObject1 = new JSONObject(builder.toString());
                     JSONObject jsonObject2 = jsonObject1.getJSONObject("chapter");
                     File externalFolder = Environment.getExternalStorageDirectory();
-                    File temp = new File(externalFolder.getPath() + "/Reader/temp/novel/" +
+                    File temp = new File(externalFolder.getPath() + "/Reader/temp/novel/"+
+                            folderName+ "/" +
                             mIndexList.get(indexNum).getTitle());
                     if (!temp.getParentFile().exists()) {
                         temp.getParentFile().mkdirs();

@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -22,7 +23,7 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.example.testscroll.TextReaderActivity;
+import com.ifchan.reader.activity.MyTxtReaderActivity;
 import com.ifchan.reader.adapter.BookRecyclerViewAdapter;
 import com.ifchan.reader.adapter.IndexExpandableListViewAdapter;
 import com.ifchan.reader.entity.Book;
@@ -40,13 +41,16 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BookDetailsActivity extends AppCompatActivity {
     private static final int IMAGE_LOADED = 0;
+    public static final String TXT_PATH = "TXT_PATH";
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
@@ -175,7 +179,8 @@ public class BookDetailsActivity extends AppCompatActivity {
     }
 
     private void startTextReader() {
-        Intent intent = new Intent(getApplicationContext(), TextReaderActivity.class);
+        Intent intent = new Intent(getApplicationContext(), MyTxtReaderActivity.class);
+//        Intent intent = new Intent(getApplicationContext(), TextReaderActivity.class);
         startActivity(intent);
     }
 
@@ -296,7 +301,19 @@ public class BookDetailsActivity extends AppCompatActivity {
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int
                     childPosition, long id) {
                 if (mNovelTextGetter.isLoaded()) {
-                    mNovelTextGetter.download(groupPosition * 20 + childPosition);
+                    mNovelTextGetter.download(mBook.getTitle(),groupPosition * 20 + childPosition);
+                    Intent intent = new Intent(BookDetailsActivity.this, MyTxtReaderActivity.class);
+                    File externalFolder = Environment.getExternalStorageDirectory();
+                    File temp = new File(externalFolder.getPath() + "/Reader/temp/novel/"+
+                            mBook.getTitle());
+                    try {
+                        intent.putExtra(TXT_PATH, externalFolder.getPath() + "/Reader/temp/novel/"+
+                                mBook.getTitle() + "/" + URLEncoder.encode(mIndexList.get
+                                (groupPosition * 20 + childPosition).getTitle(),"UTF-8"));
+                        startActivity(intent);
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                 }
                 return true;
             }
